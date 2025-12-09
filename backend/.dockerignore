@@ -1,0 +1,14 @@
+dist
+node_modules
+
+src/**/*.spec.ts
+test
+
+.dockerignore
+Dockerfile
+
+.env
+.gitignore
+README.md
+
+eslint.config.mjs
