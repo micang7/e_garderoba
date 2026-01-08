@@ -41,7 +41,7 @@ export class UserService {
 
     return plainToInstance(UserDto, user, {
       excludeExtraneousValues: true,
-    }) as UserDto;
+    });
   }
 
   async findAll(
@@ -96,11 +96,10 @@ export class UserService {
     const rows = await qb.getMany();
 
     return {
-      data: rows.map(
-        (u) =>
-          plainToInstance(UserDto, u, {
-            excludeExtraneousValues: true,
-          }) as UserDto,
+      data: rows.map((u) =>
+        plainToInstance(UserDto, u, {
+          excludeExtraneousValues: true,
+        }),
       ),
       total,
     };
@@ -112,7 +111,7 @@ export class UserService {
 
     return plainToInstance(UserDto, user, {
       excludeExtraneousValues: true,
-    }) as UserDto;
+    });
   }
 
   async update(
@@ -154,7 +153,7 @@ export class UserService {
 
     return plainToInstance(UserDto, user, {
       excludeExtraneousValues: true,
-    }) as UserDto;
+    });
   }
 
   async delete(

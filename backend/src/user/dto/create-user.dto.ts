@@ -27,7 +27,7 @@ export class UserCreateDto {
   lastName: string;
 
   @ApiProperty({ example: 'jkowalski@example.com' })
-  @IsEmail({})
+  @IsEmail()
   @IsNotEmpty()
   @MaxLength(255)
   email: string;
