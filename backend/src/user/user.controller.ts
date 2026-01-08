@@ -11,8 +11,9 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserCreateDto } from '../user/dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserUpdateDto } from './dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Controller('users')
 export class UserController {
@@ -41,8 +42,12 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  async update(@Param('id') id: number, @Body() dto: UserUpdateDto) {
+    const data = await this.userService.update(id, dto, {
+      id: 1,
+      role: UserRole.Admin,
+    });
+    return { data };
   }
 
   @Delete(':id')
