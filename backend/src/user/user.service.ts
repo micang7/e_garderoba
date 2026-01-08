@@ -10,7 +10,10 @@ import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { UserDto } from './dto/user.dto';
 
-import { AlreadyExistsException } from '../common/exceptions';
+import {
+  AlreadyExistsException,
+  NotFoundException,
+} from '../common/exceptions';
 
 @Injectable()
 export class UserService {
@@ -101,8 +104,13 @@ export class UserService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<UserDto> {
+    const user = await this.users.findOne({ where: { id } });
+    if (!user) throw new NotFoundException();
+
+    return plainToInstance(UserDto, user, {
+      excludeExtraneousValues: true,
+    }) as UserDto;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
