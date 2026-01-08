@@ -6,13 +6,15 @@ import { plainToInstance } from 'class-transformer';
 
 import { User } from '../user/entities/user.entity';
 import { UserCreateDto } from '../user/dto/create-user.dto';
-import { UpdateUserDto } from '../user/dto/update-user.dto';
+import { UserUpdateDto } from '../user/dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { UserDto } from './dto/user.dto';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 import {
   AlreadyExistsException,
   NotFoundException,
+  NoPermissionException,
 } from '../common/exceptions';
 
 @Injectable()
@@ -113,8 +115,46 @@ export class UserService {
     }) as UserDto;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: number,
+    dto: UserUpdateDto,
+    authUser: { id: number; role: UserRole },
+  ): Promise<UserDto> {
+    const user = await this.users.findOne({ where: { id } });
+    if (!user) throw new NotFoundException();
+
+    // permissions
+    // tancerz, kierownik mogą edytować tylko własne email i telefon
+    if (authUser.id === id) {
+      if (
+        (authUser.role === UserRole.Dancer ||
+          authUser.role === UserRole.Manager) &&
+        (dto.firstName !== user.firstName ||
+          dto.lastName !== user.lastName ||
+          dto.role !== user.role)
+      ) {
+        throw new NoPermissionException();
+      }
+    } else if (authUser.role !== UserRole.Admin) {
+      throw new NoPermissionException();
+    }
+
+    if (dto.email && dto.email !== user.email) {
+      if (await this.users.exists({ where: { email: dto.email } }))
+        throw new AlreadyExistsException('Email already exists');
+      user.email = dto.email;
+    }
+
+    if (dto.firstName) user.firstName = dto.firstName;
+    if (dto.lastName) user.lastName = dto.lastName;
+    if (dto.phone) user.phone = dto.phone;
+    if (dto.role) user.role = dto.role;
+
+    await this.users.save(user);
+
+    return plainToInstance(UserDto, user, {
+      excludeExtraneousValues: true,
+    }) as UserDto;
   }
 
   remove(id: number) {
