@@ -157,7 +157,18 @@ export class UserService {
     }) as UserDto;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async delete(
+    id: number,
+    authUser: { id: number; role: UserRole },
+  ): Promise<void> {
+    // permissions
+    // user może usunąć tylko samego siebie, chyba że jest adminem
+    if (authUser.id !== id && authUser.role !== UserRole.Admin)
+      throw new NoPermissionException();
+
+    const user = await this.users.findOne({ where: { id } });
+    if (!user) throw new NotFoundException();
+
+    await this.users.remove(user);
   }
 }
