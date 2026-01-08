@@ -9,7 +9,7 @@ import { UserCreateDto } from '../user/dto/create-user.dto';
 import { UserUpdateDto } from '../user/dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { UserDto } from './dto/user.dto';
-import { UserRole } from 'src/common/enums/user-role.enum';
+import { UserRole } from '../common/enums/user-role.enum';
 
 import {
   AlreadyExistsException,
@@ -125,13 +125,13 @@ export class UserService {
 
     // permissions
     // tancerz, kierownik mogą edytować tylko własne email i telefon
-    if (authUser.id === id) {
+    if (authUser.id === user.id) {
       if (
         (authUser.role === UserRole.Dancer ||
           authUser.role === UserRole.Manager) &&
-        (dto.firstName !== user.firstName ||
-          dto.lastName !== user.lastName ||
-          dto.role !== user.role)
+        ((dto.firstName && dto.firstName !== user.firstName) ||
+          (dto.lastName && dto.lastName !== user.lastName) ||
+          (dto.role && dto.role !== user.role))
       ) {
         throw new NoPermissionException();
       }
