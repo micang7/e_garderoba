@@ -7,10 +7,12 @@ import {
   Body,
   Param,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserCreateDto } from '../user/dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserQueryDto } from './dto/user-query.dto';
 
 @Controller('users')
 export class UserController {
@@ -24,8 +26,12 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  async findAll(@Query() query: UserQueryDto) {
+    const { data, total } = await this.userService.findAll(query);
+    return {
+      data,
+      meta: { total },
+    };
   }
 
   @Get(':id')
