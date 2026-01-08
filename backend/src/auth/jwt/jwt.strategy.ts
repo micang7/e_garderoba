@@ -4,8 +4,7 @@ import { Repository } from 'typeorm';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './jwt-payload.interface';
-import { UserRole } from 'src/common/enums/user-role.enum';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
@@ -25,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.users.findOne({ where: { id: payload.sub } });
+    const user = await this.users.findOne({ where: { id: payload.id } });
     if (!user || payload.email !== user.email || payload.role !== user.role)
       throw new UnauthorizedException('Invalid token');
 

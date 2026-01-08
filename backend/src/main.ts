@@ -9,9 +9,22 @@ async function bootstrap() {
     .setTitle('E-garderoba')
     .setDescription('Dokumentacja e-garderoba API')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Wprowadź token JWT',
+        in: 'header',
+      },
+      'JWT',
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, documentFactory);
+
+  app.setGlobalPrefix('/api/v1');
 
   await app.listen(process.env.PORT ?? 3000);
 }
