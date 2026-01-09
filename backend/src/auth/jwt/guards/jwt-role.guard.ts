@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole, RolePriority } from 'src/common/enums/user-role.enum';
+import { UserRole, RolePriority } from '../../../common/enums/user-role.enum';
 import { ROLES_KEY } from '../decorators/jwt-role.decorator';
 
 @Injectable()

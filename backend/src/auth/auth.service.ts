@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { plainToInstance } from 'class-transformer';
-import { UserDto } from 'src/user/dto/user.dto';
-import { User } from 'src/user/entities/user.entity';
+import { UserDto } from '../user/dto/user.dto';
+import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 
