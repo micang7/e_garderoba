@@ -6,7 +6,10 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -18,7 +21,8 @@ import { AuthModule } from './auth/auth.module';
         password: config.getOrThrow('POSTGRES_PASSWORD'),
         database: config.getOrThrow('POSTGRES_DB'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: config.get('NODE_ENV') === 'development',
+        dropSchema: config.get('NODE_ENV') === 'development',
       }),
     }),
     UserModule,

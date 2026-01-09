@@ -3,40 +3,31 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserService } from './user.service';
-import { User } from '../user/entities/user.entity';
+import { User } from './entities/user.entity';
 import { UserRole } from '../common/enums/user-role.enum';
+import { UserCreateDto } from './dto/create-user.dto';
 import {
   AlreadyExistsException,
   NotFoundException,
   NoPermissionException,
 } from '../common/exceptions';
-import { UserCreateDto } from './dto/create-user.dto';
+import { UserUpdateDto } from './dto/update-user.dto';
 
-// Mockowanie bcrypt, aby testy były szybkie
 jest.mock('bcrypt');
 
 describe('UserService', () => {
   let service: UserService;
   let repository: Repository<User>;
 
-  const mockUser = {
-    id: 1,
+  const user: User = {
+    id: 0,
     firstName: 'Jan',
     lastName: 'Kowalski',
-    email: 'jan@test.pl',
+    email: 'jkowalski@example.com',
     phone: '123456789',
     role: UserRole.Dancer,
-    passwordHash: 'hashed_password',
-  } as User;
-
-  // Mock dla QueryBuilder (potrzebny do findAll)
-  const mockQueryBuilder = {
-    andWhere: jest.fn().mockReturnThis(),
-    orderBy: jest.fn().mockReturnThis(),
-    skip: jest.fn().mockReturnThis(),
-    take: jest.fn().mockReturnThis(),
-    getCount: jest.fn().mockResolvedValue(1),
-    getMany: jest.fn().mockResolvedValue([mockUser]),
+    createdAt: new Date(),
+    passwordHash: 'haslo',
   };
 
   beforeEach(async () => {
@@ -51,7 +42,6 @@ describe('UserService', () => {
             save: jest.fn(),
             findOne: jest.fn(),
             remove: jest.fn(),
-            createQueryBuilder: jest.fn(() => mockQueryBuilder),
           },
         },
       ],
@@ -62,127 +52,237 @@ describe('UserService', () => {
     jest.clearAllMocks();
   });
 
-  // --- TESTY METODY CREATE ---
   describe('create', () => {
-    it('powinien stworzyć użytkownika, jeśli email jest wolny', async () => {
-      const dto = {
-        email: 'new@test.pl',
-        password: 'password123',
-        firstName: 'A',
-        lastName: 'B',
-        phone: '1',
-        role: UserRole.Dancer,
-      };
+    const dto: UserCreateDto = {
+      firstName: 'Jan',
+      lastName: 'Kowalski',
+      email: 'jkowalski@example.com',
+      phone: '123456789',
+      role: UserRole.Dancer,
+      password: 'haslo',
+    };
 
+    it('check if email is not in use', async () => {
+      jest.spyOn(repository, 'exists').mockResolvedValue(true);
+
+      await expect(service.create(dto)).rejects.toThrow(AlreadyExistsException);
+    });
+
+    it('hash password', async () => {
       jest.spyOn(repository, 'exists').mockResolvedValue(false);
-      jest.spyOn(repository, 'create').mockReturnValue(mockUser);
-      jest.spyOn(repository, 'save').mockResolvedValue(mockUser);
-      (bcrypt.hash as jest.Mock).mockResolvedValue('hashed_pw');
+      const createSpy = jest.spyOn(repository, 'create');
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hash');
+
+      await service.create({ ...dto, password: 'plain' });
+
+      expect(createSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ passwordHash: 'hash' }),
+      );
+    });
+
+    it('create user if email is available', async () => {
+      jest.spyOn(repository, 'exists').mockResolvedValue(false);
+      jest
+        .spyOn(repository, 'create')
+        .mockReturnValue({ ...user, email: 'anowak@example.com' });
 
       const result = await service.create(dto);
 
-      expect(
-        jest.spyOn(repository, 'exists').mockResolvedValue(false),
-      ).toHaveBeenCalled();
-      expect(
-        jest.spyOn(repository, 'exists').mockResolvedValue(false),
-      ).toHaveBeenCalled();
-      expect(result.email).toBe(mockUser.email);
-    });
-
-    it('powinien rzucić AlreadyExistsException, gdy email zajęty', async () => {
-      jest.spyOn(repository, 'exists').mockResolvedValue(true);
-      await expect(
-        service.create({ email: 'exists@test.pl' } as UserCreateDto),
-      ).rejects.toThrow(AlreadyExistsException);
+      expect(result.email).toBe('anowak@example.com');
     });
   });
 
-  // --- TESTY METODY FINDALL ---
-  describe('findAll', () => {
-    it('powinien zwrócić listę użytkowników i total', async () => {
-      const result = await service.findAll({
-        search: 'Jan',
-        limit: 10,
-        offset: 0,
-      });
-
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalled();
-      expect(result.data).toHaveLength(1);
-      expect(result.total).toBe(1);
-    });
-  });
-
-  // --- TESTY METODY UPDATE ---
-  describe('update', () => {
-    it('powinien pozwolić adminowi edytować dowolnego użytkownika', async () => {
-      const authUser = { id: 99, role: UserRole.Admin };
-      const dto = { firstName: 'Zmienione' };
-
-      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...mockUser });
-      jest
-        .spyOn(repository, 'save')
-        .mockResolvedValue({ ...mockUser, ...dto } as User);
-
-      const result = await service.update(1, dto, authUser);
-      expect(result.firstName).toBe('Zmienione');
-    });
-
-    it('powinien rzucić NoPermissionException, gdy Dancer próbuje edytować cudze konto', async () => {
-      const authUser = { id: 2, role: UserRole.Dancer }; // Inne ID niż w mockUser (id:1)
-      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser);
-
-      await expect(service.update(1, {}, authUser)).rejects.toThrow(
-        NoPermissionException,
-      );
-    });
-
-    it('powinien rzucić NoPermissionException, gdy Dancer próbuje zmienić swoje nazwisko', async () => {
-      const authUser = { id: 1, role: UserRole.Dancer };
-      const dto = { lastName: 'NoweNazwisko' };
-      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser);
-
-      await expect(service.update(1, dto, authUser)).rejects.toThrow(
-        NoPermissionException,
-      );
-    });
-
-    it('powinien pozwolić Dancerowi zmienić swój email (jeśli wolny)', async () => {
-      const authUser = { id: 1, role: UserRole.Dancer };
-      const dto = { email: 'new-email@test.pl' };
-
-      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...mockUser });
-      jest.spyOn(repository, 'exists').mockResolvedValue(false);
-
-      await service.update(1, dto, authUser);
-      expect(jest.spyOn(repository, 'save')).toHaveBeenCalled();
-    });
-  });
-
-  // --- TESTY METODY DELETE ---
-  describe('delete', () => {
-    it('powinien pozwolić użytkownikowi usunąć samego siebie', async () => {
-      const authUser = { id: 1, role: UserRole.Dancer };
-      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser);
-
-      await service.delete(1, authUser);
-      expect(jest.spyOn(repository, 'remove')).toHaveBeenCalledWith(mockUser);
-    });
-
-    it('powinien rzucić NoPermissionException, gdy nie-admin usuwa kogoś innego', async () => {
-      const authUser = { id: 2, role: UserRole.Dancer };
-      await expect(service.delete(1, authUser)).rejects.toThrow(
-        NoPermissionException,
-      );
-    });
-
-    it('powinien rzucić NotFoundException, gdy użytkownik nie istnieje', async () => {
-      const authUser = { id: 1, role: UserRole.Admin };
+  describe('findOne', () => {
+    it('check if user exists', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
 
-      await expect(service.delete(1, authUser)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findOne(0)).rejects.toThrow(NotFoundException);
+    });
+
+    it('return user if exists', async () => {
+      jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue({ ...user, email: 'anowak@example.com' });
+
+      const result = await service.findOne(0);
+
+      expect(result.email).toBe('anowak@example.com');
+    });
+  });
+
+  describe('update', () => {
+    const dto: UserUpdateDto = {
+      firstName: 'Adam',
+      lastName: 'Nowak',
+      email: 'anowak@example.com',
+      phone: '987654321',
+      role: UserRole.Manager,
+    };
+
+    it('check if user exists', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
+      await expect(
+        service.update(0, dto, { id: 0, role: UserRole.Dancer }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('Dancer, Manager cannot update their own firstName, lastName or role', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
+
+      await expect(
+        service.update(
+          0,
+          { firstName: 'Adam' },
+          { id: 0, role: UserRole.Dancer },
+        ),
+      ).rejects.toThrow(NoPermissionException);
+
+      await expect(
+        service.update(
+          0,
+          { lastName: 'Nowak' },
+          { id: 0, role: UserRole.Dancer },
+        ),
+      ).rejects.toThrow(NoPermissionException);
+
+      await expect(
+        service.update(
+          0,
+          { role: UserRole.Admin },
+          { id: 0, role: UserRole.Dancer },
+        ),
+      ).rejects.toThrow(NoPermissionException);
+
+      await expect(
+        service.update(
+          0,
+          { firstName: 'Adam' },
+          { id: 0, role: UserRole.Manager },
+        ),
+      ).rejects.toThrow(NoPermissionException);
+
+      await expect(
+        service.update(
+          0,
+          { lastName: 'Nowak' },
+          { id: 0, role: UserRole.Manager },
+        ),
+      ).rejects.toThrow(NoPermissionException);
+
+      await expect(
+        service.update(
+          0,
+          { role: UserRole.Admin },
+          { id: 0, role: UserRole.Manager },
+        ),
+      ).rejects.toThrow(NoPermissionException);
+    });
+
+    it('Dancer, Manager cannot update other users', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
+
+      await expect(
+        service.update(0, dto, { id: 1, role: UserRole.Dancer }),
+      ).rejects.toThrow(NoPermissionException);
+
+      await expect(
+        service.update(0, dto, { id: 1, role: UserRole.Manager }),
+      ).rejects.toThrow(NoPermissionException);
+    });
+
+    it('check if updated email is not in use', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
+      jest.spyOn(repository, 'exists').mockResolvedValue(true);
+
+      await expect(
+        service.update(
+          0,
+          { email: 'anowak@example.com' },
+          { id: 0, role: UserRole.Dancer },
+        ),
+      ).rejects.toThrow(AlreadyExistsException);
+    });
+
+    it('Dancer, Manager can update their own email or phone', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
+      jest.spyOn(repository, 'exists').mockResolvedValue(false);
+      jest.spyOn(repository, 'save').mockResolvedValue({
+        ...user,
+        email: 'anowak@example.com',
+        phone: '987654321',
+      });
+
+      const dancer = await service.update(0, dto, {
+        id: 0,
+        role: UserRole.Dancer,
+      });
+      expect(dancer.email).toBe('anowak@example.com');
+      expect(dancer.phone).toBe('987654321');
+
+      const manager = await service.update(0, dto, {
+        id: 0,
+        role: UserRole.Manager,
+      });
+      expect(manager.email).toBe('anowak@example.com');
+      expect(manager.phone).toBe('987654321');
+    });
+
+    it('Admin can update any other user', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
+      jest.spyOn(repository, 'exists').mockResolvedValue(false);
+      jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue({ ...user, firstName: 'Adam' });
+
+      const result = await service.update(0, dto, {
+        id: 1,
+        role: UserRole.Admin,
+      });
+
+      expect(result.firstName).toBe('Adam');
+    });
+  });
+
+  describe('delete', () => {
+    it('Dancer, Manager cannot delete other user', async () => {
+      await expect(
+        service.delete(0, { id: 1, role: UserRole.Dancer }),
+      ).rejects.toThrow(NoPermissionException);
+
+      await expect(
+        service.delete(0, { id: 1, role: UserRole.Manager }),
+      ).rejects.toThrow(NoPermissionException);
+    });
+
+    it('check if user exists', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
+      await expect(
+        service.delete(0, { id: 0, role: UserRole.Dancer }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('user can delete his own account', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
+      const removeSpy = jest.spyOn(repository, 'remove');
+
+      await service.delete(0, { id: 0, role: UserRole.Dancer });
+      expect(removeSpy).toHaveBeenCalled();
+
+      await service.delete(0, { id: 0, role: UserRole.Manager });
+      expect(removeSpy).toHaveBeenCalled();
+
+      await service.delete(0, { id: 0, role: UserRole.Admin });
+      expect(removeSpy).toHaveBeenCalled();
+    });
+
+    it('Admin can delete other user', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
+      const removeSpy = jest.spyOn(repository, 'remove');
+
+      await service.delete(0, { id: 1, role: UserRole.Admin });
+      expect(removeSpy).toHaveBeenCalled();
     });
   });
 });

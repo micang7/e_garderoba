@@ -1,12 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { plainToInstance } from 'class-transformer';
-import { UserDto } from 'src/user/dto/user.dto';
-import { User } from 'src/user/entities/user.entity';
+import { UserDto } from '../user/dto/user.dto';
+import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
+import { UnauthorizedException } from '../common/exceptions';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
     }
 
     const token = this.jwtService.sign({
-      sub: user.id,
+      id: user.id,
       email: user.email,
       role: user.role,
     });
