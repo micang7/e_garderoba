@@ -149,9 +149,9 @@ export class UserService {
     if (dto.phone) user.phone = dto.phone;
     if (dto.role) user.role = dto.role;
 
-    await this.users.save(user);
+    const updated = await this.users.save(user);
 
-    return plainToInstance(UserDto, user, {
+    return plainToInstance(UserDto, updated, {
       excludeExtraneousValues: true,
     });
   }
