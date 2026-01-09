@@ -1,5 +1,11 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
+export class UnauthorizedException extends HttpException {
+  constructor(message = 'Authorization required') {
+    super({ error: message }, HttpStatus.UNAUTHORIZED);
+  }
+}
+
 export class NoPermissionException extends HttpException {
   constructor(message = 'Permission denied') {
     super({ error: message }, HttpStatus.FORBIDDEN);
