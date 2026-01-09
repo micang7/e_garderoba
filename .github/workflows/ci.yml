@@ -12,7 +12,7 @@ on:
       - main
 
 jobs:
-  backend-lint&unit-tests:
+  backend-lint-and-unit-tests:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,8 +33,10 @@ jobs:
 
   backend-e2e-tests:
     runs-on: ubuntu-latest
-    needs: backend-lint&unit-tests
-    if: ${{ github.event_name == 'pull_request' }}
+    needs: backend-lint-and-unit-tests
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'))
     defaults:
       run:
         working-directory: backend
@@ -50,7 +52,7 @@ jobs:
       - run: npm ci
       - run: npm run test:e2e -- --ci
 
-  # frontend-lint&unit-tests:
+  # frontend-lint-and-unit-tests:
   #   runs-on: ubuntu-latest
   #   defaults:
   #     run:
@@ -71,8 +73,10 @@ jobs:
 
   # frontend-e2e-tests:
   #   runs-on: ubuntu-latest
-  #   needs: frontend-lint&unit-tests
-  #   if: ${{ github.event_name == 'pull_request' }}
+  #   needs: frontend-lint-and-unit-tests
+  #   if: >
+  #     github.event_name == 'pull_request' ||
+  #     (github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'))
   #   defaults:
   #     run:
   #       working-directory: frontend
