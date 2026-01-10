@@ -6,12 +6,12 @@ import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { UserRole } from '../common/enums/user-role.enum';
 import { UserCreateDto } from './dto/create-user.dto';
-import {
-  AlreadyExistsException,
-  NotFoundException,
-  NoPermissionException,
-} from '../common/exceptions';
 import { UserUpdateDto } from './dto/update-user.dto';
+import {
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 
 jest.mock('bcrypt');
 
@@ -65,7 +65,7 @@ describe('UserService', () => {
     it('check if email is not in use', async () => {
       jest.spyOn(repository, 'exists').mockResolvedValue(true);
 
-      await expect(service.create(dto)).rejects.toThrow(AlreadyExistsException);
+      await expect(service.create(dto)).rejects.toThrow(ConflictException);
     });
 
     it('hash password', async () => {
@@ -134,7 +134,7 @@ describe('UserService', () => {
           { firstName: dto.firstName },
           { id: 0, role: UserRole.Dancer },
         ),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(
@@ -142,7 +142,7 @@ describe('UserService', () => {
           { lastName: dto.lastName },
           { id: 0, role: UserRole.Dancer },
         ),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(
@@ -150,7 +150,7 @@ describe('UserService', () => {
           { role: UserRole.Admin },
           { id: 0, role: UserRole.Dancer },
         ),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(
@@ -158,7 +158,7 @@ describe('UserService', () => {
           { firstName: dto.firstName },
           { id: 0, role: UserRole.Manager },
         ),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(
@@ -166,7 +166,7 @@ describe('UserService', () => {
           { lastName: dto.lastName },
           { id: 0, role: UserRole.Manager },
         ),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(
@@ -174,7 +174,7 @@ describe('UserService', () => {
           { role: UserRole.Admin },
           { id: 0, role: UserRole.Manager },
         ),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('Dancer, Manager cannot update other users', async () => {
@@ -182,11 +182,11 @@ describe('UserService', () => {
 
       await expect(
         service.update(0, dto, { id: 1, role: UserRole.Dancer }),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(0, dto, { id: 1, role: UserRole.Manager }),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('check if updated email is not in use', async () => {
@@ -199,7 +199,7 @@ describe('UserService', () => {
           { email: dto.email },
           { id: 0, role: UserRole.Dancer },
         ),
-      ).rejects.toThrow(AlreadyExistsException);
+      ).rejects.toThrow(ConflictException);
     });
 
     it('Dancer, Manager can update their own email or phone', async () => {
@@ -252,11 +252,11 @@ describe('UserService', () => {
     it('Dancer, Manager cannot delete other user', async () => {
       await expect(
         service.delete(0, { id: 1, role: UserRole.Dancer }),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.delete(0, { id: 1, role: UserRole.Manager }),
-      ).rejects.toThrow(NoPermissionException);
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('check if user exists', async () => {

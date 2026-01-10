@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -11,12 +16,6 @@ import { UserQueryDto } from './dto/user-query.dto';
 import { UserDto } from './dto/user.dto';
 import { UserRole } from '../common/enums/user-role.enum';
 
-import {
-  AlreadyExistsException,
-  NotFoundException,
-  NoPermissionException,
-} from '../common/exceptions';
-
 @Injectable()
 export class UserService {
   constructor(
@@ -26,7 +25,7 @@ export class UserService {
 
   async create(dto: UserCreateDto): Promise<UserDto> {
     if (await this.users.exists({ where: { email: dto.email } }))
-      throw new AlreadyExistsException('Email already exists');
+      throw new ConflictException('Email already exists');
 
     const user = this.users.create({
       firstName: dto.firstName,
@@ -132,15 +131,15 @@ export class UserService {
           (dto.lastName && dto.lastName !== user.lastName) ||
           (dto.role && dto.role !== user.role))
       ) {
-        throw new NoPermissionException();
+        throw new ForbiddenException();
       }
     } else if (authUser.role !== UserRole.Admin) {
-      throw new NoPermissionException();
+      throw new ForbiddenException();
     }
 
     if (dto.email && dto.email !== user.email) {
       if (await this.users.exists({ where: { email: dto.email } }))
-        throw new AlreadyExistsException('Email already exists');
+        throw new ConflictException('Email already exists');
       user.email = dto.email;
     }
 
@@ -163,7 +162,7 @@ export class UserService {
     // permissions
     // user może usunąć tylko samego siebie, chyba że jest adminem
     if (authUser.id !== id && authUser.role !== UserRole.Admin)
-      throw new NoPermissionException();
+      throw new ForbiddenException();
 
     const user = await this.users.findOne({ where: { id } });
     if (!user) throw new NotFoundException();

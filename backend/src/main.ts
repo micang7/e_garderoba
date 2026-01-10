@@ -1,7 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import {
+  ValidationErrorCodes,
+  ValidationErrorMessages,
+} from './common/validation-errors';
+import { GlobalExceptionFilter } from './common/exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,8 +38,23 @@ async function bootstrap() {
       transform: true,
       transformOptions: { enableImplicitConversion: true },
       forbidNonWhitelisted: true,
+      exceptionFactory: (errors) =>
+        new BadRequestException(
+          errors.flatMap((err) =>
+            Object.keys(err.constraints || {}).map((key) => {
+              const code = ValidationErrorCodes[key] || 'UNKNOWN_ERROR';
+              return {
+                field: err.property,
+                code,
+                message: ValidationErrorMessages[code] || 'Invalid value',
+              };
+            }),
+          ),
+        ),
     }),
   );
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }
