@@ -11,7 +11,7 @@ import { UnauthorizedException } from '../../common/exceptions';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    config: ConfigService,
+    private readonly config: ConfigService,
     @InjectRepository(User)
     private readonly users: Repository<User>,
   ) {
