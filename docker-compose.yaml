@@ -2,13 +2,13 @@ services:
   frontend:
     build: ./frontend
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.development.local
     ports:
       - "5173:80"
   backend:
     build: ./backend
     env_file:
-      - ./backend/.env
+      - ./backend/.env.development.local
     ports:
       - "3000:3000"
     depends_on:
@@ -16,10 +16,18 @@ services:
   db:
     image: postgres:18
     env_file:
-      - ./backend/.env
+      - ./backend/.env.development.local
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+  db_test:
+    image: postgres:18
+    env_file:
+      - ./backend/.env.test.local
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql
 volumes:
   postgres_data:
