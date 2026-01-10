@@ -73,7 +73,7 @@ describe('UserService', () => {
       const createSpy = jest.spyOn(repository, 'create');
       (bcrypt.hash as jest.Mock).mockResolvedValue('hash');
 
-      await service.create({ ...dto, password: 'plain' });
+      await service.create({ ...dto });
 
       expect(createSpy).toHaveBeenCalledWith(
         expect.objectContaining({ passwordHash: 'hash' }),
@@ -82,13 +82,11 @@ describe('UserService', () => {
 
     it('create user if email is available', async () => {
       jest.spyOn(repository, 'exists').mockResolvedValue(false);
-      jest
-        .spyOn(repository, 'create')
-        .mockReturnValue({ ...user, email: 'anowak@example.com' });
+      jest.spyOn(repository, 'create').mockReturnValue({ ...user });
 
       const result = await service.create(dto);
 
-      expect(result.email).toBe('anowak@example.com');
+      expect(result.email).toBe(dto.email);
     });
   });
 
@@ -133,7 +131,7 @@ describe('UserService', () => {
       await expect(
         service.update(
           0,
-          { firstName: 'Adam' },
+          { firstName: dto.firstName },
           { id: 0, role: UserRole.Dancer },
         ),
       ).rejects.toThrow(NoPermissionException);
@@ -141,7 +139,7 @@ describe('UserService', () => {
       await expect(
         service.update(
           0,
-          { lastName: 'Nowak' },
+          { lastName: dto.lastName },
           { id: 0, role: UserRole.Dancer },
         ),
       ).rejects.toThrow(NoPermissionException);
@@ -157,7 +155,7 @@ describe('UserService', () => {
       await expect(
         service.update(
           0,
-          { firstName: 'Adam' },
+          { firstName: dto.firstName },
           { id: 0, role: UserRole.Manager },
         ),
       ).rejects.toThrow(NoPermissionException);
@@ -165,7 +163,7 @@ describe('UserService', () => {
       await expect(
         service.update(
           0,
-          { lastName: 'Nowak' },
+          { lastName: dto.lastName },
           { id: 0, role: UserRole.Manager },
         ),
       ).rejects.toThrow(NoPermissionException);
@@ -198,7 +196,7 @@ describe('UserService', () => {
       await expect(
         service.update(
           0,
-          { email: 'anowak@example.com' },
+          { email: dto.email },
           { id: 0, role: UserRole.Dancer },
         ),
       ).rejects.toThrow(AlreadyExistsException);
@@ -207,25 +205,31 @@ describe('UserService', () => {
     it('Dancer, Manager can update their own email or phone', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
       jest.spyOn(repository, 'exists').mockResolvedValue(false);
-      jest.spyOn(repository, 'save').mockResolvedValue({
-        ...user,
-        email: 'anowak@example.com',
-        phone: '987654321',
-      });
+      jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue({ ...user, email: dto.email!, phone: dto.phone });
 
-      const dancer = await service.update(0, dto, {
-        id: 0,
-        role: UserRole.Dancer,
-      });
-      expect(dancer.email).toBe('anowak@example.com');
-      expect(dancer.phone).toBe('987654321');
+      const dancer = await service.update(
+        0,
+        { email: dto.email, phone: dto.phone },
+        {
+          id: 0,
+          role: UserRole.Dancer,
+        },
+      );
+      expect(dancer.email).toBe(dto.email);
+      expect(dancer.phone).toBe(dto.phone);
 
-      const manager = await service.update(0, dto, {
-        id: 0,
-        role: UserRole.Manager,
-      });
-      expect(manager.email).toBe('anowak@example.com');
-      expect(manager.phone).toBe('987654321');
+      const manager = await service.update(
+        0,
+        { email: dto.email, phone: dto.phone },
+        {
+          id: 0,
+          role: UserRole.Manager,
+        },
+      );
+      expect(manager.email).toBe(dto.email);
+      expect(manager.phone).toBe(dto.phone);
     });
 
     it('Admin can update any other user', async () => {
@@ -233,14 +237,14 @@ describe('UserService', () => {
       jest.spyOn(repository, 'exists').mockResolvedValue(false);
       jest
         .spyOn(repository, 'save')
-        .mockResolvedValue({ ...user, firstName: 'Adam' });
+        .mockResolvedValue({ ...user, firstName: dto.firstName! });
 
       const result = await service.update(0, dto, {
         id: 1,
         role: UserRole.Admin,
       });
 
-      expect(result.firstName).toBe('Adam');
+      expect(result.firstName).toBe(dto.firstName);
     });
   });
 
