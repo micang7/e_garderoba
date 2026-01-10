@@ -18,7 +18,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
     "seed:sandbox": "ts-node src/database/seeds/sandbox-seed.ts",
-    "start:sandbox": "cross-env NODE_ENV=test npm run seed:sandbox && nest start"
+    "seed:initial": "ts-node src/database/seeds/initial-seed.ts",
+    "start:sandbox": "cross-env NODE_ENV=test npm run seed:sandbox && nest start",
+    "mg:gen": "ts-node ./node_modules/typeorm/cli.js migration:generate src/database/migrations/name -d src/database/data-source.ts",
+    "mg:create": "ts-node ./node_modules/typeorm/cli.js migration:create src/database/migrations/name -d src/database/data-source.ts",
+    "mg:run": "ts-node ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts",
+    "mg:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert -d src/database/data-source.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
