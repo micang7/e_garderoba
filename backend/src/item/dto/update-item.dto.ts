@@ -11,7 +11,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Trim } from '../../common/validation/decorators/trim.decorator';
 
 export class UpdateItemDto {
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: 'KRA-M-SPD-1' })
   @MaxLength(50)
   @IsString()
   @IsNotEmpty()
@@ -19,7 +19,7 @@ export class UpdateItemDto {
   @Trim()
   code?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: 'Spodnie krakowskie' })
   @MaxLength(100)
   @IsString()
   @IsNotEmpty()
@@ -27,7 +27,9 @@ export class UpdateItemDto {
   @Trim()
   name?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({
+    example: 'talia: 90 cm / biodra: 105 cm / nogawka: 86 cm',
+  })
   @MaxLength(255)
   @IsString()
   @IsNotEmpty()
@@ -35,12 +37,14 @@ export class UpdateItemDto {
   @Trim()
   size?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: null })
   @IsEnum(ItemGender)
   @IsOptional()
   gender?: ItemGender;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({
+    example: 'Spodnie w biało czerwone paski wzdłuż nogawek.',
+  })
   @IsString()
   @IsNotEmpty()
   @IsOptional()

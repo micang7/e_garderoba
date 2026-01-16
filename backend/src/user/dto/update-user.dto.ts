@@ -13,7 +13,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Trim } from '../../common/validation/decorators/trim.decorator';
 
 export class UpdateUserDto {
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: 'Mariusz' })
   @MaxLength(50)
   @IsString()
   @IsNotEmpty()
@@ -21,7 +21,7 @@ export class UpdateUserDto {
   @Trim()
   firstName?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: 'Nowak' })
   @MaxLength(50)
   @IsString()
   @IsNotEmpty()
@@ -29,7 +29,7 @@ export class UpdateUserDto {
   @Trim()
   lastName?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: 'mnowak@example.com' })
   @MaxLength(255)
   @IsEmail()
   @IsString()
@@ -38,7 +38,7 @@ export class UpdateUserDto {
   @Trim()
   email?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: null })
   @Matches(/^[0-9+\-\s()]+$/)
   @MaxLength(20)
   @IsString()
@@ -47,7 +47,7 @@ export class UpdateUserDto {
   @Trim()
   phone?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ example: 'kierownik' })
   @IsEnum(UserRole)
   @ValidateIf((o, v) => v !== undefined)
   role?: UserRole;

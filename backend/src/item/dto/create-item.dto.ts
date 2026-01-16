@@ -39,7 +39,10 @@ export class CreateItemDto {
   @IsOptional()
   gender?: ItemGender;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({
+    example:
+      'Niebieskie spodnie z czerwonym herbem na zewnętrznej stronie nogawek.',
+  })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
