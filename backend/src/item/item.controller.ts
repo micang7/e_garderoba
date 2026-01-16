@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { ItemService } from './item.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { ItemQueryDto } from './dto/item-query.dto';
 
 @Controller('items')
 export class ItemController {
@@ -24,8 +26,12 @@ export class ItemController {
   }
 
   @Get()
-  findAll() {
-    return this.itemService.findAll();
+  async findAll(@Query() query: ItemQueryDto) {
+    const { data, total } = await this.itemService.findAll(query);
+    return {
+      data,
+      meta: { total },
+    };
   }
 
   @Get(':id')
