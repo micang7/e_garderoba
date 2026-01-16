@@ -77,7 +77,7 @@ export class UserService {
     const total = await qb.getCount();
 
     // sorting
-    if (query.sort) qb.orderBy(`u.${query.sort}`, query.order);
+    qb.orderBy(`u.${query.sort ?? 'id'}`, query.order);
 
     // pagination
     qb.skip(query.offset).take(query.limit);
