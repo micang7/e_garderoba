@@ -92,8 +92,25 @@ export class ItemService {
     });
   }
 
-  update(id: number, updateItemDto: UpdateItemDto) {
-    return `This action updates a #${id} item`;
+  async update(id: number, dto: UpdateItemDto): Promise<ItemDto> {
+    const item = await this.items.findOne({ where: { id } });
+    if (!item) throw new NotFoundException();
+
+    if (dto.code && dto.code !== item.code) {
+      if (await this.items.exists({ where: { code: dto.code } }))
+        throw new ConflictException('Item code already exists');
+      item.code = dto.code;
+    }
+    if (dto.name) item.name = dto.name;
+    if (dto.size !== undefined) item.size = dto.size;
+    if (dto.gender !== undefined) item.gender = dto.gender;
+    if (dto.description !== undefined) item.description = dto.description;
+
+    const updated = await this.items.save(item);
+
+    return plainToInstance(ItemDto, updated, {
+      excludeExtraneousValues: true,
+    });
   }
 
   remove(id: number) {
