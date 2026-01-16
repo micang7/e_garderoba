@@ -134,7 +134,7 @@ describe('UserController (e2e)', () => {
 
     it('sorts by firstName ASC', async () => {
       const res = await request(app.getHttpServer())
-        .get('/users?sort=first-name&order=asc')
+        .get('/users?sort=firstName&order=ASC')
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
 
@@ -144,7 +144,7 @@ describe('UserController (e2e)', () => {
 
     it('sorts by lastName DESC', async () => {
       const res = await request(app.getHttpServer())
-        .get('/users?sort=last-name&order=desc')
+        .get('/users?sort=lastName&order=desc')
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
 

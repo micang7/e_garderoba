@@ -77,20 +77,10 @@ export class UserService {
     const total = await qb.getCount();
 
     // sorting
-    if (query.sort) {
-      const sortMap: Record<string, string> = {
-        'first-name': 'u.firstName',
-        'last-name': 'u.lastName',
-        email: 'u.email',
-        'created-at': 'u.createdAt',
-      };
-      const sortField = sortMap[query.sort] ?? 'u.id';
-      const order = query.order === 'desc' ? 'DESC' : 'ASC';
-      qb.orderBy(sortField, order);
-    }
+    if (query.sort) qb.orderBy(`u.${query.sort}`, query.order);
 
     // pagination
-    qb.skip(query.offset ?? 0).take(query.limit ?? 20);
+    qb.skip(query.offset).take(query.limit);
 
     const rows = await qb.getMany();
 
@@ -145,7 +135,7 @@ export class UserService {
 
     if (dto.firstName) user.firstName = dto.firstName;
     if (dto.lastName) user.lastName = dto.lastName;
-    if (dto.phone) user.phone = dto.phone;
+    if (dto.phone) user.phone = dto.phone === '' ? undefined : dto.phone;
     if (dto.role) user.role = dto.role;
 
     const updated = await this.users.save(user);

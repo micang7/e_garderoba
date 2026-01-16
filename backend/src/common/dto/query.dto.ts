@@ -7,7 +7,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { SortOrder } from '../enums/sort-order.enum';
 
 export class QueryDto {
@@ -16,14 +16,14 @@ export class QueryDto {
   @IsInt()
   @IsOptional()
   @Type(() => Number)
-  offset?: number;
+  offset?: number = 0;
 
   @ApiPropertyOptional({ example: '' })
   @Min(1)
   @IsInt()
   @IsOptional()
   @Type(() => Number)
-  limit?: number;
+  limit?: number = 20;
 
   @ApiPropertyOptional({ example: '' })
   @IsNotEmpty()
@@ -34,5 +34,8 @@ export class QueryDto {
   @ApiPropertyOptional({ example: '' })
   @IsEnum(SortOrder)
   @IsOptional()
-  order?: string;
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value?.toUpperCase() : value,
+  )
+  order?: SortOrder = SortOrder.ASC;
 }
