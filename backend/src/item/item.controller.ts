@@ -35,8 +35,9 @@ export class ItemController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.itemService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    const data = await this.itemService.findOne(id);
+    return { data };
   }
 
   @Patch(':id')
