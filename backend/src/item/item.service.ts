@@ -6,6 +6,7 @@ import { Item } from './entities/item.entity';
 import { Repository } from 'typeorm';
 import { ItemDto } from './dto/item.dto';
 import { plainToInstance } from 'class-transformer';
+import { ItemQueryDto } from './dto/item-query.dto';
 
 @Injectable()
 export class ItemService {
@@ -33,8 +34,49 @@ export class ItemService {
     });
   }
 
-  findAll() {
-    return `This action returns all item`;
+  async findAll(
+    query: ItemQueryDto,
+  ): Promise<{ data: ItemDto[]; total: number }> {
+    const qb = this.items.createQueryBuilder('i');
+
+    // search
+    if (query.search) {
+      qb.andWhere(`(i.code ILIKE :s OR i.name ILIKE :s)`, {
+        s: `%${query.search}%`,
+      });
+    }
+
+    // field filters
+    if (query.code) qb.andWhere(`i.code ILIKE :c`, { c: `%${query.code}%` });
+
+    if (query.name) qb.andWhere(`i.name ILIKE :n`, { n: `%${query.name}%` });
+
+    if (query.gender) qb.andWhere(`i.gender = :g`, { g: query.gender });
+
+    if (query.createdFrom)
+      qb.andWhere(`i.createdAt >= :from`, { from: query.createdFrom });
+
+    if (query.createdTo)
+      qb.andWhere(`i.createdAt <= :to`, { to: query.createdTo });
+
+    const total = await qb.getCount();
+
+    // sorting
+    qb.orderBy(`i.${query.sort ?? 'id'}`, query.order);
+
+    // pagination
+    qb.skip(query.offset).take(query.limit);
+
+    const rows = await qb.getMany();
+
+    return {
+      data: rows.map((i) =>
+        plainToInstance(ItemDto, i, {
+          excludeExtraneousValues: true,
+        }),
+      ),
+      total,
+    };
   }
 
   findOne(id: number) {
