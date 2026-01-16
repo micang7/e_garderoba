@@ -1,69 +1,42 @@
-import {
-  IsOptional,
-  IsInt,
-  Min,
-  IsString,
-  IsEnum,
-  IsDateString,
-} from 'class-validator';
+import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { QueryDto } from '../../common/dto/query.dto';
+import { UserSortFields } from '../../common/enums/user-sort-fields.enum';
 
-export class UserQueryDto {
+export class UserQueryDto extends QueryDto {
   @ApiPropertyOptional({ example: '' })
+  @IsEnum(UserSortFields)
   @IsOptional()
-  @IsInt()
-  @Min(0)
-  offset?: number;
-
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  limit?: number;
+  sort?: UserSortFields;
 
   @ApiPropertyOptional({ example: '' })
-  @IsOptional()
   @IsString()
-  sort?: string;
-
-  @ApiPropertyOptional({ example: '' })
   @IsOptional()
-  @IsString()
-  order?: string;
-
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
-  @IsString()
-  search?: string;
-
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
-  @IsString()
   firstName?: string;
 
   @ApiPropertyOptional({ example: '' })
-  @IsOptional()
   @IsString()
+  @IsOptional()
   lastName?: string;
 
   @ApiPropertyOptional({ example: '' })
-  @IsOptional()
   @IsString()
+  @IsOptional()
   email?: string;
 
   @ApiPropertyOptional({ example: '' })
-  @IsOptional()
   @IsEnum(UserRole)
+  @IsOptional()
   role?: UserRole;
 
   @ApiPropertyOptional({ example: '' })
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   createdFrom?: string;
 
   @ApiPropertyOptional({ example: '' })
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   createdTo?: string;
 }

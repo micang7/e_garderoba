@@ -7,7 +7,7 @@ import { UserRole } from '../src/common/enums/user-role.enum';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../src/user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { UserCreateDto } from '../src/user/dto/create-user.dto';
+import { CreateUserDto } from '../src/user/dto/create-user.dto';
 import { App } from 'supertest/types';
 import { UserDto } from '../src/user/dto/user.dto';
 
@@ -213,7 +213,7 @@ describe('UserController (e2e)', () => {
   });
 
   describe('POST /users', () => {
-    const dto: UserCreateDto = {
+    const dto: CreateUserDto = {
       firstName: 'Jan',
       lastName: 'Kowalski',
       email: 'jkowalski@example.com',

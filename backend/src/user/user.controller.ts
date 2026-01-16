@@ -11,8 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserCreateDto } from '../user/dto/create-user.dto';
-import { UserUpdateDto } from './dto/update-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { UserRole } from '../common/enums/user-role.enum';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -31,7 +31,7 @@ export class UserController {
   @Post()
   @HttpCode(201)
   @Role(UserRole.Admin)
-  async create(@Body() dto: UserCreateDto) {
+  async create(@Body() dto: CreateUserDto) {
     const data = await this.userService.create(dto);
     return { data };
   }
@@ -55,7 +55,7 @@ export class UserController {
   @Patch(':id')
   async update(
     @Param('id') id: number,
-    @Body() dto: UserUpdateDto,
+    @Body() dto: UpdateUserDto,
     @AuthUser() authUser: JwtPayload,
   ) {
     const data = await this.userService.update(id, dto, authUser);

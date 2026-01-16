@@ -5,8 +5,8 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { UserRole } from '../common/enums/user-role.enum';
-import { UserCreateDto } from './dto/create-user.dto';
-import { UserUpdateDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ConflictException,
   ForbiddenException,
@@ -53,7 +53,7 @@ describe('UserService', () => {
   });
 
   describe('create', () => {
-    const dto: UserCreateDto = {
+    const dto: CreateUserDto = {
       firstName: 'Jan',
       lastName: 'Kowalski',
       email: 'jkowalski@example.com',
@@ -109,7 +109,7 @@ describe('UserService', () => {
   });
 
   describe('update', () => {
-    const dto: UserUpdateDto = {
+    const dto: UpdateUserDto = {
       firstName: 'Adam',
       lastName: 'Nowak',
       email: 'anowak@example.com',

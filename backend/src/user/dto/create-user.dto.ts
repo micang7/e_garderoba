@@ -1,51 +1,54 @@
 import {
-  IsString,
   IsNotEmpty,
   MaxLength,
-  MinLength,
   IsEmail,
   IsOptional,
   Matches,
   IsEnum,
+  IsString,
 } from 'class-validator';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Trim } from '../../common/validation/decorators/trim.decorator';
 
-export class UserCreateDto {
+export class CreateUserDto {
   @ApiProperty({ example: 'Jan' })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
   @MaxLength(50)
+  @IsNotEmpty()
+  @IsString()
+  @Trim()
   firstName: string;
 
   @ApiProperty({ example: 'Kowalski' })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
   @MaxLength(50)
+  @IsNotEmpty()
+  @IsString()
+  @Trim()
   lastName: string;
 
   @ApiProperty({ example: 'jkowalski@example.com' })
+  @MaxLength(255)
   @IsEmail()
   @IsNotEmpty()
-  @MaxLength(255)
+  @IsString()
+  @Trim()
   email: string;
 
   @ApiPropertyOptional({ example: '123456789' })
-  @IsOptional()
-  @MaxLength(20)
   @Matches(/^[0-9+\-\s()]+$/)
+  @MaxLength(20)
+  @IsNotEmpty()
+  @IsString()
+  @IsOptional()
+  @Trim()
   phone?: string;
 
   @ApiProperty({ example: 'administrator' })
   @IsEnum(UserRole)
-  @IsNotEmpty()
   role: UserRole;
 
   @ApiProperty({ example: 'jkowalski' })
-  @IsString()
   @IsNotEmpty()
-  @MinLength(1)
+  @IsString()
   password: string;
 }

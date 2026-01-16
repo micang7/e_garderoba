@@ -10,8 +10,8 @@ import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 
 import { User } from '../user/entities/user.entity';
-import { UserCreateDto } from '../user/dto/create-user.dto';
-import { UserUpdateDto } from '../user/dto/update-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { UserDto } from './dto/user.dto';
 import { UserRole } from '../common/enums/user-role.enum';
@@ -23,7 +23,7 @@ export class UserService {
     private readonly users: Repository<User>,
   ) {}
 
-  async create(dto: UserCreateDto): Promise<UserDto> {
+  async create(dto: CreateUserDto): Promise<UserDto> {
     if (await this.users.exists({ where: { email: dto.email } }))
       throw new ConflictException('Email already exists');
 
@@ -115,7 +115,7 @@ export class UserService {
 
   async update(
     id: number,
-    dto: UserUpdateDto,
+    dto: UpdateUserDto,
     authUser: { id: number; role: UserRole },
   ): Promise<UserDto> {
     const user = await this.users.findOne({ where: { id } });
