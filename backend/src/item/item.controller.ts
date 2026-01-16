@@ -41,8 +41,9 @@ export class ItemController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto) {
-    return this.itemService.update(+id, updateItemDto);
+  async update(@Param('id') id: number, @Body() dto: UpdateItemDto) {
+    const data = await this.itemService.update(id, dto);
+    return { data };
   }
 
   @Delete(':id')
