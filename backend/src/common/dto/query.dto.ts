@@ -26,8 +26,8 @@ export class QueryDto {
   limit?: number = 20;
 
   @ApiPropertyOptional({ example: '' })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @IsOptional()
   search?: string;
 

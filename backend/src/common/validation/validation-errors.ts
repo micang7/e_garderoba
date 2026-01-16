@@ -11,7 +11,7 @@ export const ValidationErrorCodes: Record<string, string> = {
 };
 
 export const ValidationErrorMessages: Record<string, string> = {
-  EMPTY: 'The value cannot be empty',
+  EMPTY: 'The non-empty value is required',
   INVALID_TYPE: 'The value has invalid type',
   INVALID_FORMAT: 'The value has invalid format',
   INVALID_VALUE: 'The value is not allowed',

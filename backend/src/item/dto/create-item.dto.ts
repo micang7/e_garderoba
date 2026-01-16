@@ -12,15 +12,15 @@ import { Trim } from '../../common/validation/decorators/trim.decorator';
 export class CreateItemDto {
   @ApiProperty({ example: 'RZE-M-SPD-1' })
   @MaxLength(50)
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @Trim()
   code: string;
 
   @ApiProperty({ example: 'Spodnie rzeszowskie' })
   @MaxLength(100)
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @Trim()
   name: string;
 
@@ -28,8 +28,8 @@ export class CreateItemDto {
     example: 'talia: 88 cm / biodra: 104 cm / nogawka: 82 cm',
   })
   @MaxLength(255)
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @IsOptional()
   @Trim()
   size?: string;
@@ -40,8 +40,8 @@ export class CreateItemDto {
   gender?: ItemGender;
 
   @ApiPropertyOptional({ example: '' })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @IsOptional()
   @Trim()
   description?: string;

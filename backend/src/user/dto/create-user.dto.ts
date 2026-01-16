@@ -14,31 +14,31 @@ import { Trim } from '../../common/validation/decorators/trim.decorator';
 export class CreateUserDto {
   @ApiProperty({ example: 'Jan' })
   @MaxLength(50)
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @Trim()
   firstName: string;
 
   @ApiProperty({ example: 'Kowalski' })
   @MaxLength(50)
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @Trim()
   lastName: string;
 
   @ApiProperty({ example: 'jkowalski@example.com' })
   @MaxLength(255)
   @IsEmail()
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @Trim()
   email: string;
 
   @ApiPropertyOptional({ example: '123456789' })
   @Matches(/^[0-9+\-\s()]+$/)
   @MaxLength(20)
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   @IsOptional()
   @Trim()
   phone?: string;
@@ -48,7 +48,7 @@ export class CreateUserDto {
   role: UserRole;
 
   @ApiProperty({ example: 'jkowalski' })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   password: string;
 }
