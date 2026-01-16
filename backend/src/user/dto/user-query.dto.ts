@@ -1,8 +1,8 @@
 import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { UserRole } from '../enums/user-role.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { QueryDto } from '../../common/dto/query.dto';
-import { UserSortFields } from '../../common/enums/user-sort-fields.enum';
+import { UserSortFields } from '../enums/user-sort-fields.enum';
 
 export class UserQueryDto extends QueryDto {
   @ApiPropertyOptional({ type: String, example: '' })

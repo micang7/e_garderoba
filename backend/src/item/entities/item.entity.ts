@@ -1,4 +1,4 @@
-import { ItemGender } from '../../common/enums/item-gender.enum';
+import { ItemGender } from '../enums/item-gender.enum';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('items')

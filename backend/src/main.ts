@@ -6,7 +6,7 @@ import {
   ValidationErrorCodes,
   ValidationErrorMessages,
 } from './common/validation/validation-errors';
-import { GlobalExceptionFilter } from './common/exception.filter';
+import { GlobalExceptionFilter } from './common/exceptions/exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

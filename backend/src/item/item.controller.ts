@@ -15,10 +15,10 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { ItemQueryDto } from './dto/item-query.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { RolesGuard } from '../auth/jwt/guards/jwt-role.guard';
+import { RolesGuard } from '../auth/jwt/guards/roles.guard';
 import { JwtAuthGuard } from '../auth/jwt/guards/jwt-auth.guard';
-import { Role } from '../auth/jwt/decorators/jwt-role.decorator';
-import { UserRole } from '../common/enums/user-role.enum';
+import { MinRole } from '../auth/jwt/decorators/min-role.decorator';
+import { UserRole } from '../user/enums/user-role.enum';
 
 @ApiBearerAuth('JWT')
 @Controller('items')
@@ -28,14 +28,14 @@ export class ItemController {
 
   @Post()
   @HttpCode(201)
-  @Role(UserRole.Manager)
+  @MinRole(UserRole.Manager)
   async create(@Body() dto: CreateItemDto) {
     const data = await this.itemService.create(dto);
     return { data };
   }
 
   @Get()
-  @Role(UserRole.Manager)
+  @MinRole(UserRole.Manager)
   async findAll(@Query() query: ItemQueryDto) {
     const { data, total } = await this.itemService.findAll(query);
     return {
@@ -51,7 +51,7 @@ export class ItemController {
   }
 
   @Patch(':id')
-  @Role(UserRole.Manager)
+  @MinRole(UserRole.Manager)
   async update(@Param('id') id: number, @Body() dto: UpdateItemDto) {
     const data = await this.itemService.update(id, dto);
     return { data };
@@ -59,7 +59,7 @@ export class ItemController {
 
   @Delete(':id')
   @HttpCode(204)
-  @Role(UserRole.Manager)
+  @MinRole(UserRole.Manager)
   async delete(@Param('id') id: number) {
     await this.itemService.delete(id);
     return;

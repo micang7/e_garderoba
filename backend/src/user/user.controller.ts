@@ -14,12 +14,12 @@ import { UserService } from './user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
-import { UserRole } from '../common/enums/user-role.enum';
+import { UserRole } from './enums/user-role.enum';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/jwt/guards/jwt-role.guard';
-import { Role } from '../auth/jwt/decorators/jwt-role.decorator';
-import { AuthUser } from '../auth/jwt/decorators/jwt-auth-user.decorator';
+import { RolesGuard } from '../auth/jwt/guards/roles.guard';
+import { MinRole } from '../auth/jwt/decorators/min-role.decorator';
+import { AuthUser } from '../auth/jwt/decorators/auth-user.decorator';
 import type { JwtPayload } from '../auth/jwt/interfaces/jwt-payload.interface';
 
 @ApiBearerAuth('JWT')
@@ -30,14 +30,14 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
-  @Role(UserRole.Admin)
+  @MinRole(UserRole.Admin)
   async create(@Body() dto: CreateUserDto) {
     const data = await this.userService.create(dto);
     return { data };
   }
 
   @Get()
-  @Role(UserRole.Manager)
+  @MinRole(UserRole.Manager)
   async findAll(@Query() query: UserQueryDto) {
     const { data, total } = await this.userService.findAll(query);
     return {

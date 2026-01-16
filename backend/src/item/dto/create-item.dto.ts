@@ -5,7 +5,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import { ItemGender } from '../../common/enums/item-gender.enum';
+import { ItemGender } from '../enums/item-gender.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Trim } from '../../common/validation/decorators/trim.decorator';
 

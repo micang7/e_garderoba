@@ -8,7 +8,7 @@ import {
   IsNotEmpty,
   ValidateIf,
 } from 'class-validator';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { UserRole } from '../enums/user-role.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Trim } from '../../common/validation/decorators/trim.decorator';
 

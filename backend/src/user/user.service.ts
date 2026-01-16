@@ -14,7 +14,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { UserDto } from './dto/user.dto';
-import { UserRole } from '../common/enums/user-role.enum';
+import { UserRole } from './enums/user-role.enum';
 
 @Injectable()
 export class UserService {

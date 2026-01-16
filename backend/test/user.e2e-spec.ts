@@ -3,7 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole } from '../src/common/enums/user-role.enum';
+import { UserRole } from '../src/user/enums/user-role.enum';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../src/user/entities/user.entity';
 import { Repository } from 'typeorm';

@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../../app.module';
 import { DataSource, DeepPartial } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { UserRole } from '../../user/enums/user-role.enum';
 import * as bcrypt from 'bcrypt';
 
 async function seedDev() {

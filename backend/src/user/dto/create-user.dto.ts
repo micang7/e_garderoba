@@ -7,7 +7,7 @@ import {
   IsEnum,
   IsString,
 } from 'class-validator';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { UserRole } from '../enums/user-role.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Trim } from '../../common/validation/decorators/trim.decorator';
 
