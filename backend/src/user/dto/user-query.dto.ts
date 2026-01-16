@@ -5,7 +5,7 @@ import { QueryDto } from '../../common/dto/query.dto';
 import { UserSortFields } from '../../common/enums/user-sort-fields.enum';
 
 export class UserQueryDto extends QueryDto {
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ type: String, example: '' })
   @IsEnum(UserSortFields)
   @IsOptional()
   sort?: UserSortFields;

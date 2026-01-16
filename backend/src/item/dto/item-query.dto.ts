@@ -5,7 +5,7 @@ import { QueryDto } from '../../common/dto/query.dto';
 import { ItemSortFields } from '../../common/enums/item-sort-fields.enum';
 
 export class ItemQueryDto extends QueryDto {
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ type: String, example: '' })
   @IsEnum(ItemSortFields)
   @IsOptional()
   sort?: ItemSortFields;
