@@ -47,7 +47,9 @@ export class ItemController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.itemService.remove(+id);
+  @HttpCode(204)
+  async delete(@Param('id') id: number) {
+    await this.itemService.delete(id);
+    return;
   }
 }
