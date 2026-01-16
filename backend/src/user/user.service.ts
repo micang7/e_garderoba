@@ -132,10 +132,9 @@ export class UserService {
         throw new ConflictException('Email already exists');
       user.email = dto.email;
     }
-
     if (dto.firstName) user.firstName = dto.firstName;
     if (dto.lastName) user.lastName = dto.lastName;
-    if (dto.phone) user.phone = dto.phone === '' ? undefined : dto.phone;
+    if (dto.phone !== undefined) user.phone = dto.phone;
     if (dto.role) user.role = dto.role;
 
     const updated = await this.users.save(user);
