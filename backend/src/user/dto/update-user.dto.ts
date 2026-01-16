@@ -1,51 +1,54 @@
 import {
-  IsString,
-  IsNotEmpty,
   MaxLength,
-  MinLength,
   IsEmail,
   Matches,
   IsEnum,
   IsOptional,
+  IsString,
+  IsNotEmpty,
+  ValidateIf,
 } from 'class-validator';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { UserRole } from '../enums/user-role.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Trim } from '../../common/validation/decorators/trim.decorator';
 
-export class UserUpdateDto {
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
+export class UpdateUserDto {
+  @ApiPropertyOptional({ example: 'Mariusz' })
+  @MaxLength(50)
   @IsString()
   @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(50)
+  @ValidateIf((o, v) => v !== undefined)
+  @Trim()
   firstName?: string;
 
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
+  @ApiPropertyOptional({ example: 'Nowak' })
+  @MaxLength(50)
   @IsString()
   @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(50)
+  @ValidateIf((o, v) => v !== undefined)
+  @Trim()
   lastName?: string;
 
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
-  @IsEmail()
-  @IsNotEmpty()
+  @ApiPropertyOptional({ example: 'mnowak@example.com' })
   @MaxLength(255)
-  email?: string;
-
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
+  @IsEmail()
   @IsString()
   @IsNotEmpty()
-  @MaxLength(20)
+  @ValidateIf((o, v) => v !== undefined)
+  @Trim()
+  email?: string;
+
+  @ApiPropertyOptional({ example: null })
   @Matches(/^[0-9+\-\s()]+$/)
+  @MaxLength(20)
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @Trim()
   phone?: string;
 
-  @ApiPropertyOptional({ example: '' })
-  @IsOptional()
+  @ApiPropertyOptional({ example: 'kierownik' })
   @IsEnum(UserRole)
-  @IsNotEmpty()
+  @ValidateIf((o, v) => v !== undefined)
   role?: UserRole;
 }

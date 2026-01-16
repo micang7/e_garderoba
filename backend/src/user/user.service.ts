@@ -10,11 +10,11 @@ import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 
 import { User } from '../user/entities/user.entity';
-import { UserCreateDto } from '../user/dto/create-user.dto';
-import { UserUpdateDto } from '../user/dto/update-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { UserDto } from './dto/user.dto';
-import { UserRole } from '../common/enums/user-role.enum';
+import { UserRole } from './enums/user-role.enum';
 
 @Injectable()
 export class UserService {
@@ -23,7 +23,7 @@ export class UserService {
     private readonly users: Repository<User>,
   ) {}
 
-  async create(dto: UserCreateDto): Promise<UserDto> {
+  async create(dto: CreateUserDto): Promise<UserDto> {
     if (await this.users.exists({ where: { email: dto.email } }))
       throw new ConflictException('Email already exists');
 
@@ -77,20 +77,10 @@ export class UserService {
     const total = await qb.getCount();
 
     // sorting
-    if (query.sort) {
-      const sortMap: Record<string, string> = {
-        'first-name': 'u.firstName',
-        'last-name': 'u.lastName',
-        email: 'u.email',
-        'created-at': 'u.createdAt',
-      };
-      const sortField = sortMap[query.sort] ?? 'u.id';
-      const order = query.order === 'desc' ? 'DESC' : 'ASC';
-      qb.orderBy(sortField, order);
-    }
+    qb.orderBy(`u.${query.sort ?? 'id'}`, query.order);
 
     // pagination
-    qb.skip(query.offset ?? 0).take(query.limit ?? 20);
+    qb.skip(query.offset).take(query.limit);
 
     const rows = await qb.getMany();
 
@@ -115,7 +105,7 @@ export class UserService {
 
   async update(
     id: number,
-    dto: UserUpdateDto,
+    dto: UpdateUserDto,
     authUser: { id: number; role: UserRole },
   ): Promise<UserDto> {
     const user = await this.users.findOne({ where: { id } });
@@ -142,10 +132,9 @@ export class UserService {
         throw new ConflictException('Email already exists');
       user.email = dto.email;
     }
-
     if (dto.firstName) user.firstName = dto.firstName;
     if (dto.lastName) user.lastName = dto.lastName;
-    if (dto.phone) user.phone = dto.phone;
+    if (dto.phone !== undefined) user.phone = dto.phone;
     if (dto.role) user.role = dto.role;
 
     const updated = await this.users.save(user);

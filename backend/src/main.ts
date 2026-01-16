@@ -5,8 +5,8 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import {
   ValidationErrorCodes,
   ValidationErrorMessages,
-} from './common/validation-errors';
-import { GlobalExceptionFilter } from './common/exception.filter';
+} from './common/validation/validation-errors';
+import { GlobalExceptionFilter } from './common/exceptions/exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,21 +35,19 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
       forbidNonWhitelisted: true,
+      transform: true,
       exceptionFactory: (errors) =>
         new BadRequestException(
-          errors.flatMap((err) =>
-            Object.keys(err.constraints || {}).map((key) => {
-              const code = ValidationErrorCodes[key] || 'UNKNOWN_ERROR';
-              return {
-                field: err.property,
-                code,
-                message: ValidationErrorMessages[code] || 'Invalid value',
-              };
-            }),
-          ),
+          errors.map((err) => {
+            const [firstKey] = Object.keys(err.constraints ?? {});
+            const code = ValidationErrorCodes[firstKey] || 'UNKNOWN_ERROR';
+            return {
+              field: err.property,
+              code,
+              message: ValidationErrorMessages[code] || 'Invalid value',
+            };
+          }),
         ),
     }),
   );

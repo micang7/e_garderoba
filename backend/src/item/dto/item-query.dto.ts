@@ -1,34 +1,29 @@
 import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
-import { UserRole } from '../enums/user-role.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ItemGender } from '../enums/item-gender.enum';
 import { QueryDto } from '../../common/dto/query.dto';
-import { UserSortFields } from '../enums/user-sort-fields.enum';
+import { ItemSortFields } from '../enums/item-sort-fields.enum';
 
-export class UserQueryDto extends QueryDto {
+export class ItemQueryDto extends QueryDto {
   @ApiPropertyOptional({ type: String, example: '' })
-  @IsEnum(UserSortFields)
+  @IsEnum(ItemSortFields)
   @IsOptional()
-  sort?: UserSortFields;
+  sort?: ItemSortFields;
 
   @ApiPropertyOptional({ example: '' })
   @IsString()
   @IsOptional()
-  firstName?: string;
+  code?: string;
 
   @ApiPropertyOptional({ example: '' })
   @IsString()
   @IsOptional()
-  lastName?: string;
+  name?: string;
 
   @ApiPropertyOptional({ example: '' })
-  @IsString()
+  @IsEnum(ItemGender)
   @IsOptional()
-  email?: string;
-
-  @ApiPropertyOptional({ example: '' })
-  @IsEnum(UserRole)
-  @IsOptional()
-  role?: UserRole;
+  gender?: ItemGender;
 
   @ApiPropertyOptional({ example: '' })
   @IsDateString()
