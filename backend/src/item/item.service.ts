@@ -113,7 +113,10 @@ export class ItemService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} item`;
+  async delete(id: number): Promise<void> {
+    const item = await this.items.findOne({ where: { id } });
+    if (!item) throw new NotFoundException();
+
+    await this.items.remove(item);
   }
 }
