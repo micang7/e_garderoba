@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -79,8 +83,13 @@ export class ItemService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} item`;
+  async findOne(id: number): Promise<ItemDto> {
+    const item = await this.items.findOne({ where: { id } });
+    if (!item) throw new NotFoundException();
+
+    return plainToInstance(ItemDto, item, {
+      excludeExtraneousValues: true,
+    });
   }
 
   update(id: number, updateItemDto: UpdateItemDto) {
