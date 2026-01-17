@@ -11,6 +11,8 @@ import { GlobalExceptionFilter } from './common/exceptions/exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({ origin: 'http://localhost:5173', credentials: true });
+
   const config = new DocumentBuilder()
     .setTitle('E-garderoba')
     .setDescription('Dokumentacja e-garderoba API')
