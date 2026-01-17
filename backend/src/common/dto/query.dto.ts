@@ -31,7 +31,7 @@ export class QueryDto {
   @IsOptional()
   search?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ enum: SortOrder, example: '' })
   @IsEnum(SortOrder)
   @IsOptional()
   @Transform(({ value }: { value: unknown }) =>

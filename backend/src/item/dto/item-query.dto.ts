@@ -5,7 +5,7 @@ import { QueryDto } from '../../common/dto/query.dto';
 import { ItemSortFields } from '../enums/item-sort-fields.enum';
 
 export class ItemQueryDto extends QueryDto {
-  @ApiPropertyOptional({ type: String, example: '' })
+  @ApiPropertyOptional({ enum: ItemSortFields, example: '' })
   @IsEnum(ItemSortFields)
   @IsOptional()
   sort?: ItemSortFields;
@@ -20,7 +20,7 @@ export class ItemQueryDto extends QueryDto {
   @IsOptional()
   name?: string;
 
-  @ApiPropertyOptional({ example: '' })
+  @ApiPropertyOptional({ enum: ItemGender, example: '' })
   @IsEnum(ItemGender)
   @IsOptional()
   gender?: ItemGender;

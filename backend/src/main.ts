@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import {
   ValidationErrorCodes,
-  ValidationErrorMessages,
+  ValidationErrorMessage,
 } from './common/validation/validation-errors';
 import { GlobalExceptionFilter } from './common/exceptions/exception.filter';
 
@@ -28,7 +28,7 @@ async function bootstrap() {
     )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, documentFactory);
+  SwaggerModule.setup('api/v1/docs', app, documentFactory);
 
   app.setGlobalPrefix('/api/v1');
 
@@ -45,7 +45,7 @@ async function bootstrap() {
             return {
               field: err.property,
               code,
-              message: ValidationErrorMessages[code] || 'Invalid value',
+              message: ValidationErrorMessage[code] || 'Invalid value',
             };
           }),
         ),

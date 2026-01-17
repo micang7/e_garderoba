@@ -19,7 +19,7 @@ async function seedProd() {
       lastName: 'Kowalski',
       email,
       phone: '123456789',
-      role: UserRole.Admin,
+      role: UserRole.ADMIN,
       passwordHash: await bcrypt.hash('jkowalski', 12),
     });
   }

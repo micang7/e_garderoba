@@ -34,7 +34,7 @@ export class CreateItemDto {
   @Trim()
   size?: string;
 
-  @ApiPropertyOptional({ example: 'męski' })
+  @ApiPropertyOptional({ enum: ItemGender, example: 'męski' })
   @IsEnum(ItemGender)
   @IsOptional()
   gender?: ItemGender;

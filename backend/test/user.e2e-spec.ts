@@ -46,7 +46,7 @@ describe('UserController (e2e)', () => {
         lastName: 'Zieliński',
         email: 'pzielinski@example.com',
         phone: '601234567',
-        role: UserRole.Dancer,
+        role: UserRole.DANCER,
         createdAt: new Date('01.01.2025'),
         passwordHash: 'x',
       },
@@ -55,7 +55,7 @@ describe('UserController (e2e)', () => {
         firstName: 'Mateusz',
         lastName: 'Woźniak',
         email: 'mwozniak@example.com',
-        role: UserRole.Manager,
+        role: UserRole.MANAGER,
         createdAt: new Date('05.05.2025'),
         passwordHash: 'x',
       },
@@ -65,7 +65,7 @@ describe('UserController (e2e)', () => {
         lastName: 'Mazur',
         email: 'mmazur@example.com',
         phone: '703456789',
-        role: UserRole.Admin,
+        role: UserRole.ADMIN,
         createdAt: new Date('12.12.2025'),
         passwordHash: 'x',
       },
@@ -74,19 +74,19 @@ describe('UserController (e2e)', () => {
     dancerToken = jwtService.sign({
       id: 1,
       email: 'pzielinski@example.com',
-      role: UserRole.Dancer,
+      role: UserRole.DANCER,
     });
 
     managerToken = jwtService.sign({
       id: 2,
       email: 'mwozniak@example.com',
-      role: UserRole.Manager,
+      role: UserRole.MANAGER,
     });
 
     adminToken = jwtService.sign({
       id: 3,
       email: 'mmazur@example.com',
-      role: UserRole.Admin,
+      role: UserRole.ADMIN,
     });
   });
 
@@ -199,7 +199,7 @@ describe('UserController (e2e)', () => {
         .expect(200);
 
       expect(res.body.data.length).toBe(1);
-      expect(res.body.data[0].role).toBe(UserRole.Manager);
+      expect(res.body.data[0].role).toBe(UserRole.MANAGER);
     });
 
     it('filters by createdFrom and createdTo', async () => {
@@ -218,7 +218,7 @@ describe('UserController (e2e)', () => {
       lastName: 'Kowalski',
       email: 'jkowalski@example.com',
       phone: '123456789',
-      role: UserRole.Dancer,
+      role: UserRole.DANCER,
       password: 'haslo',
     };
 

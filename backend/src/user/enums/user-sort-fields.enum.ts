@@ -1,7 +1,7 @@
 export enum UserSortFields {
-  firstName,
-  lastName,
-  email,
-  role,
-  createdAt,
+  FIRST_NAME = 'firstName',
+  LAST_NAME = 'lastName',
+  EMAIL = 'email',
+  ROLE = 'role',
+  CREATED_AT = 'createdAt',
 }
