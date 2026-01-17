@@ -16,6 +16,7 @@
     "openapi:generate:types": "openapi-typescript http://localhost:3000/api/v1/docs-json -o src/api/types.ts"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.19",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "react": "^19.2.0",
