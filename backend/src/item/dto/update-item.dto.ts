@@ -37,7 +37,7 @@ export class UpdateItemDto {
   @Trim()
   size?: string;
 
-  @ApiPropertyOptional({ example: null })
+  @ApiPropertyOptional({ enum: ItemGender, example: null })
   @IsEnum(ItemGender)
   @IsOptional()
   gender?: ItemGender;

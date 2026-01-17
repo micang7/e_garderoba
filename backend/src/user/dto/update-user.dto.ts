@@ -47,7 +47,7 @@ export class UpdateUserDto {
   @Trim()
   phone?: string;
 
-  @ApiPropertyOptional({ example: 'kierownik' })
+  @ApiPropertyOptional({ enum: UserRole, example: 'kierownik' })
   @IsEnum(UserRole)
   @ValidateIf((o, v) => v !== undefined)
   role?: UserRole;

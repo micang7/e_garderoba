@@ -43,7 +43,7 @@ export class CreateUserDto {
   @Trim()
   phone?: string;
 
-  @ApiProperty({ example: 'administrator' })
+  @ApiProperty({ enum: UserRole, example: 'administrator' })
   @IsEnum(UserRole)
   role: UserRole;
 
