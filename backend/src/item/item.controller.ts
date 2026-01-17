@@ -28,14 +28,14 @@ export class ItemController {
 
   @Post()
   @HttpCode(201)
-  @MinRole(UserRole.Manager)
+  @MinRole(UserRole.MANAGER)
   async create(@Body() dto: CreateItemDto) {
     const data = await this.itemService.create(dto);
     return { data };
   }
 
   @Get()
-  @MinRole(UserRole.Manager)
+  @MinRole(UserRole.MANAGER)
   async findAll(@Query() query: ItemQueryDto) {
     const { data, total } = await this.itemService.findAll(query);
     return {
@@ -51,7 +51,7 @@ export class ItemController {
   }
 
   @Patch(':id')
-  @MinRole(UserRole.Manager)
+  @MinRole(UserRole.MANAGER)
   async update(@Param('id') id: number, @Body() dto: UpdateItemDto) {
     const data = await this.itemService.update(id, dto);
     return { data };
@@ -59,7 +59,7 @@ export class ItemController {
 
   @Delete(':id')
   @HttpCode(204)
-  @MinRole(UserRole.Manager)
+  @MinRole(UserRole.MANAGER)
   async delete(@Param('id') id: number) {
     await this.itemService.delete(id);
     return;

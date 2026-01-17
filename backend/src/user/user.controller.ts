@@ -30,14 +30,14 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
-  @MinRole(UserRole.Admin)
+  @MinRole(UserRole.ADMIN)
   async create(@Body() dto: CreateUserDto) {
     const data = await this.userService.create(dto);
     return { data };
   }
 
   @Get()
-  @MinRole(UserRole.Manager)
+  @MinRole(UserRole.MANAGER)
   async findAll(@Query() query: UserQueryDto) {
     const { data, total } = await this.userService.findAll(query);
     return {

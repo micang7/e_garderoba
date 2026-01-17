@@ -1,6 +1,6 @@
 export enum ItemSortFields {
-  code,
-  name,
-  gender,
-  createdAt,
+  CODE = 'code',
+  NAME = 'name',
+  GENDER = 'gender',
+  CREATED_AT = 'createdAt',
 }

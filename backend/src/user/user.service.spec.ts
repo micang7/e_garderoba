@@ -25,7 +25,7 @@ describe('UserService', () => {
     lastName: 'Kowalski',
     email: 'jkowalski@example.com',
     phone: '123456789',
-    role: UserRole.Dancer,
+    role: UserRole.DANCER,
     createdAt: new Date(),
     passwordHash: 'haslo',
   };
@@ -58,7 +58,7 @@ describe('UserService', () => {
       lastName: 'Kowalski',
       email: 'jkowalski@example.com',
       phone: '123456789',
-      role: UserRole.Dancer,
+      role: UserRole.DANCER,
       password: 'haslo',
     };
 
@@ -114,14 +114,14 @@ describe('UserService', () => {
       lastName: 'Nowak',
       email: 'anowak@example.com',
       phone: '987654321',
-      role: UserRole.Manager,
+      role: UserRole.MANAGER,
     };
 
     it('check if user exists', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
 
       await expect(
-        service.update(0, dto, { id: 0, role: UserRole.Dancer }),
+        service.update(0, dto, { id: 0, role: UserRole.DANCER }),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -132,7 +132,7 @@ describe('UserService', () => {
         service.update(
           0,
           { firstName: dto.firstName },
-          { id: 0, role: UserRole.Dancer },
+          { id: 0, role: UserRole.DANCER },
         ),
       ).rejects.toThrow(ForbiddenException);
 
@@ -140,15 +140,15 @@ describe('UserService', () => {
         service.update(
           0,
           { lastName: dto.lastName },
-          { id: 0, role: UserRole.Dancer },
+          { id: 0, role: UserRole.DANCER },
         ),
       ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(
           0,
-          { role: UserRole.Admin },
-          { id: 0, role: UserRole.Dancer },
+          { role: UserRole.ADMIN },
+          { id: 0, role: UserRole.DANCER },
         ),
       ).rejects.toThrow(ForbiddenException);
 
@@ -156,7 +156,7 @@ describe('UserService', () => {
         service.update(
           0,
           { firstName: dto.firstName },
-          { id: 0, role: UserRole.Manager },
+          { id: 0, role: UserRole.MANAGER },
         ),
       ).rejects.toThrow(ForbiddenException);
 
@@ -164,15 +164,15 @@ describe('UserService', () => {
         service.update(
           0,
           { lastName: dto.lastName },
-          { id: 0, role: UserRole.Manager },
+          { id: 0, role: UserRole.MANAGER },
         ),
       ).rejects.toThrow(ForbiddenException);
 
       await expect(
         service.update(
           0,
-          { role: UserRole.Admin },
-          { id: 0, role: UserRole.Manager },
+          { role: UserRole.ADMIN },
+          { id: 0, role: UserRole.MANAGER },
         ),
       ).rejects.toThrow(ForbiddenException);
     });
@@ -181,11 +181,11 @@ describe('UserService', () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
 
       await expect(
-        service.update(0, dto, { id: 1, role: UserRole.Dancer }),
+        service.update(0, dto, { id: 1, role: UserRole.DANCER }),
       ).rejects.toThrow(ForbiddenException);
 
       await expect(
-        service.update(0, dto, { id: 1, role: UserRole.Manager }),
+        service.update(0, dto, { id: 1, role: UserRole.MANAGER }),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -197,7 +197,7 @@ describe('UserService', () => {
         service.update(
           0,
           { email: dto.email },
-          { id: 0, role: UserRole.Dancer },
+          { id: 0, role: UserRole.DANCER },
         ),
       ).rejects.toThrow(ConflictException);
     });
@@ -214,7 +214,7 @@ describe('UserService', () => {
         { email: dto.email, phone: dto.phone },
         {
           id: 0,
-          role: UserRole.Dancer,
+          role: UserRole.DANCER,
         },
       );
       expect(dancer.email).toBe(dto.email);
@@ -225,7 +225,7 @@ describe('UserService', () => {
         { email: dto.email, phone: dto.phone },
         {
           id: 0,
-          role: UserRole.Manager,
+          role: UserRole.MANAGER,
         },
       );
       expect(manager.email).toBe(dto.email);
@@ -241,7 +241,7 @@ describe('UserService', () => {
 
       const result = await service.update(0, dto, {
         id: 1,
-        role: UserRole.Admin,
+        role: UserRole.ADMIN,
       });
 
       expect(result.firstName).toBe(dto.firstName);
@@ -251,11 +251,11 @@ describe('UserService', () => {
   describe('delete', () => {
     it('Dancer, Manager cannot delete other user', async () => {
       await expect(
-        service.delete(0, { id: 1, role: UserRole.Dancer }),
+        service.delete(0, { id: 1, role: UserRole.DANCER }),
       ).rejects.toThrow(ForbiddenException);
 
       await expect(
-        service.delete(0, { id: 1, role: UserRole.Manager }),
+        service.delete(0, { id: 1, role: UserRole.MANAGER }),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -263,7 +263,7 @@ describe('UserService', () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
 
       await expect(
-        service.delete(0, { id: 0, role: UserRole.Dancer }),
+        service.delete(0, { id: 0, role: UserRole.DANCER }),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -271,13 +271,13 @@ describe('UserService', () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
       const removeSpy = jest.spyOn(repository, 'remove');
 
-      await service.delete(0, { id: 0, role: UserRole.Dancer });
+      await service.delete(0, { id: 0, role: UserRole.DANCER });
       expect(removeSpy).toHaveBeenCalled();
 
-      await service.delete(0, { id: 0, role: UserRole.Manager });
+      await service.delete(0, { id: 0, role: UserRole.MANAGER });
       expect(removeSpy).toHaveBeenCalled();
 
-      await service.delete(0, { id: 0, role: UserRole.Admin });
+      await service.delete(0, { id: 0, role: UserRole.ADMIN });
       expect(removeSpy).toHaveBeenCalled();
     });
 
@@ -285,7 +285,7 @@ describe('UserService', () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue({ ...user, id: 0 });
       const removeSpy = jest.spyOn(repository, 'remove');
 
-      await service.delete(0, { id: 1, role: UserRole.Admin });
+      await service.delete(0, { id: 1, role: UserRole.ADMIN });
       expect(removeSpy).toHaveBeenCalled();
     });
   });

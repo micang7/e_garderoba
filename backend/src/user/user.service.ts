@@ -115,15 +115,15 @@ export class UserService {
     // tancerz, kierownik mogą edytować tylko własne email i telefon
     if (authUser.id === user.id) {
       if (
-        (authUser.role === UserRole.Dancer ||
-          authUser.role === UserRole.Manager) &&
+        (authUser.role === UserRole.DANCER ||
+          authUser.role === UserRole.MANAGER) &&
         ((dto.firstName && dto.firstName !== user.firstName) ||
           (dto.lastName && dto.lastName !== user.lastName) ||
           (dto.role && dto.role !== user.role))
       ) {
         throw new ForbiddenException();
       }
-    } else if (authUser.role !== UserRole.Admin) {
+    } else if (authUser.role !== UserRole.ADMIN) {
       throw new ForbiddenException();
     }
 
@@ -150,7 +150,7 @@ export class UserService {
   ): Promise<void> {
     // permissions
     // user może usunąć tylko samego siebie, chyba że jest adminem
-    if (authUser.id !== id && authUser.role !== UserRole.Admin)
+    if (authUser.id !== id && authUser.role !== UserRole.ADMIN)
       throw new ForbiddenException();
 
     const user = await this.users.findOne({ where: { id } });

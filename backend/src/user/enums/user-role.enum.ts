@@ -1,11 +1,11 @@
 export enum UserRole {
-  Dancer = 'tancerz',
-  Manager = 'kierownik',
-  Admin = 'administrator',
+  DANCER = 'tancerz',
+  MANAGER = 'kierownik',
+  ADMIN = 'administrator',
 }
 
 export const RolePriority: Record<UserRole, number> = {
-  [UserRole.Dancer]: 1,
-  [UserRole.Manager]: 2,
-  [UserRole.Admin]: 3,
+  [UserRole.DANCER]: 1,
+  [UserRole.MANAGER]: 2,
+  [UserRole.ADMIN]: 3,
 };
