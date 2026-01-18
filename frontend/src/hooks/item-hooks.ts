@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { itemsApi } from '../api/services/itemsApi';
-import type { components, operations } from '../api/types';
-
-type ItemQuery = operations['ItemController_findAll']['parameters']['query'];
-type CreateItemDto = components['schemas']['CreateItemDto'];
-type UpdateItemDto = components['schemas']['UpdateItemDto'];
+import type {
+  ItemQuery,
+  CreateItemDto,
+  UpdateItemDto,
+} from '../api/interfaces/item-interfaces';
 
 export const useItems = (query: ItemQuery) => {
   return useQuery({

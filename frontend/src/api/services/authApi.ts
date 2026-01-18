@@ -1,8 +1,6 @@
 import apiClient from '../apiClient';
 import type { components } from '../types';
-
-type LoginDto = components['schemas']['LoginDto'];
-type LoginResponse = components['schemas']['LoginResponseDto'];
+import type { LoginDto, LoginResponse } from '../interfaces/auth-interfaces';
 
 export const authApi = {
   login: (data: LoginDto): Promise<LoginResponse> =>

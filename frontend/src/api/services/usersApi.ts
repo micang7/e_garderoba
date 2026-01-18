@@ -1,11 +1,11 @@
 import apiClient from '../apiClient';
-import type { components, operations } from '../types';
-
-type UserListResponse = components['schemas']['UserListResponseDto'];
-type UserResponse = components['schemas']['UserResponseDto'];
-type CreateUserDto = components['schemas']['CreateUserDto'];
-type UpdateUserDto = components['schemas']['UpdateUserDto'];
-type UserQuery = operations['UserController_findAll']['parameters']['query'];
+import type {
+  UserListResponse,
+  UserResponse,
+  CreateUserDto,
+  UpdateUserDto,
+  UserQuery,
+} from '../interfaces/user-interfaces';
 
 export const usersApi = {
   getAll: (query?: UserQuery): Promise<UserListResponse> =>

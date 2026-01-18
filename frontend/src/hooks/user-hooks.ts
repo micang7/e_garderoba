@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { usersApi } from '../api/services/usersApi';
-import type { components, operations } from '../api/types';
-
-type UserQuery = operations['UserController_findAll']['parameters']['query'];
-type CreateUserDto = components['schemas']['CreateUserDto'];
-type UpdateUserDto = components['schemas']['UpdateUserDto'];
+import type {
+  UserQuery,
+  CreateUserDto,
+  UpdateUserDto,
+} from '../api/interfaces/user-interfaces';
 
 export const useUsers = (query: UserQuery) => {
   return useQuery({

@@ -1,11 +1,11 @@
 import apiClient from '../apiClient';
-import type { components, operations } from '../types';
-
-type ItemListResponse = components['schemas']['ItemListResponseDto'];
-type ItemResponse = components['schemas']['ItemResponseDto'];
-type CreateItemDto = components['schemas']['CreateItemDto'];
-type UpdateItemDto = components['schemas']['UpdateItemDto'];
-type ItemQuery = operations['ItemController_findAll']['parameters']['query'];
+import type {
+  ItemListResponse,
+  ItemResponse,
+  CreateItemDto,
+  UpdateItemDto,
+  ItemQuery,
+} from '../interfaces/item-interfaces';
 
 export const itemsApi = {
   getAll: (query?: ItemQuery): Promise<ItemListResponse> =>
