@@ -68,11 +68,11 @@ export class UserService {
 
     if (query.role) qb.andWhere(`u.role = :role`, { role: query.role });
 
-    if (query.createdFrom)
-      qb.andWhere(`u.createdAt >= :from`, { from: query.createdFrom });
+    if (query.createdAtFrom)
+      qb.andWhere(`u.createdAt >= :from`, { from: query.createdAtFrom });
 
-    if (query.createdTo)
-      qb.andWhere(`u.createdAt <= :to`, { to: query.createdTo });
+    if (query.createdAtTo)
+      qb.andWhere(`u.createdAt <= :to`, { to: query.createdAtTo });
 
     const total = await qb.getCount();
 

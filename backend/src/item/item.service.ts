@@ -57,11 +57,11 @@ export class ItemService {
 
     if (query.gender) qb.andWhere(`i.gender = :g`, { g: query.gender });
 
-    if (query.createdFrom)
-      qb.andWhere(`i.createdAt >= :from`, { from: query.createdFrom });
+    if (query.createdAtFrom)
+      qb.andWhere(`i.createdAt >= :from`, { from: query.createdAtFrom });
 
-    if (query.createdTo)
-      qb.andWhere(`i.createdAt <= :to`, { to: query.createdTo });
+    if (query.createdAtTo)
+      qb.andWhere(`i.createdAt <= :to`, { to: query.createdAtTo });
 
     const total = await qb.getCount();
 

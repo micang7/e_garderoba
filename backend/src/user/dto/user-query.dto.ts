@@ -33,10 +33,10 @@ export class UserQueryDto extends QueryDto {
   @ApiPropertyOptional({ example: '' })
   @IsDateString()
   @IsOptional()
-  createdFrom?: string;
+  createdAtFrom?: string;
 
   @ApiPropertyOptional({ example: '' })
   @IsDateString()
   @IsOptional()
-  createdTo?: string;
+  createdAtTo?: string;
 }
