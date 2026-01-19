@@ -71,8 +71,11 @@ export class UserService {
     if (query.createdAtFrom)
       qb.andWhere(`u.createdAt >= :from`, { from: query.createdAtFrom });
 
-    if (query.createdAtTo)
-      qb.andWhere(`u.createdAt <= :to`, { to: query.createdAtTo });
+    if (query.createdAtTo) {
+      const to = new Date(query.createdAtTo);
+      to.setUTCDate(to.getUTCDate() + 1);
+      qb.andWhere(`u.createdAt < :to`, { to });
+    }
 
     const total = await qb.getCount();
 

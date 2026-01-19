@@ -60,8 +60,11 @@ export class ItemService {
     if (query.createdAtFrom)
       qb.andWhere(`i.createdAt >= :from`, { from: query.createdAtFrom });
 
-    if (query.createdAtTo)
-      qb.andWhere(`i.createdAt <= :to`, { to: query.createdAtTo });
+    if (query.createdAtTo) {
+      const to = new Date(query.createdAtTo);
+      to.setUTCDate(to.getUTCDate() + 1);
+      qb.andWhere(`u.createdAt < :to`, { to });
+    }
 
     const total = await qb.getCount();
 
