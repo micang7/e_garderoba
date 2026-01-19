@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useItems } from '../../hooks/item-hooks';
 import {
   DataTable,
   type DataTableQuery,
@@ -8,6 +7,7 @@ import {
 import type { Item } from '../../api/interfaces/item-interfaces';
 import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
+import { useItems } from '../../api/hooks/query/item-hooks';
 
 const ItemsPage = () => {
   const [query, setQuery] = useState({});

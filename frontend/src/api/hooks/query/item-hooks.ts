@@ -1,28 +1,33 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { itemsApi } from '../api/services/itemsApi';
+import useItemsApi from '../service/useItemsApi';
 import type {
   ItemQuery,
   CreateItemDto,
   UpdateItemDto,
-} from '../api/interfaces/item-interfaces';
+} from '../../interfaces/item-interfaces';
 
-export const useItems = (query: ItemQuery) => {
+export function useItems(query: ItemQuery) {
+  const itemsApi = useItemsApi();
+
   return useQuery({
     queryKey: ['items', query],
     queryFn: () => itemsApi.getAll(query),
   });
-};
+}
 
-export const useItem = (id: number) => {
+export function useItem(id: number) {
+  const itemsApi = useItemsApi();
+
   return useQuery({
     queryKey: ['item', id],
     queryFn: () => itemsApi.getById(id),
     enabled: !!id,
   });
-};
+}
 
-export const useCreateItem = () => {
+export function useCreateItem() {
   const queryClient = useQueryClient();
+  const itemsApi = useItemsApi();
 
   return useMutation({
     mutationFn: (data: CreateItemDto) => itemsApi.create(data),
@@ -30,10 +35,11 @@ export const useCreateItem = () => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
     },
   });
-};
+}
 
-export const useUpdateItem = (id: number) => {
+export function useUpdateItem(id: number) {
   const queryClient = useQueryClient();
+  const itemsApi = useItemsApi();
 
   return useMutation({
     mutationFn: (data: UpdateItemDto) => itemsApi.update(id, data),
@@ -42,10 +48,11 @@ export const useUpdateItem = (id: number) => {
       queryClient.invalidateQueries({ queryKey: ['item', id] });
     },
   });
-};
+}
 
-export const useDeleteItem = () => {
+export function useDeleteItem() {
   const queryClient = useQueryClient();
+  const itemsApi = useItemsApi();
 
   return useMutation({
     mutationFn: (id: number) => itemsApi.delete(id),
@@ -53,4 +60,4 @@ export const useDeleteItem = () => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
     },
   });
-};
+}

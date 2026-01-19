@@ -26,10 +26,10 @@ import { TableRow } from '../atoms/table/TableRow';
 import { Table } from '../atoms/table/Table';
 import { TableHead } from '../atoms/table/TableHead';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteUser } from '../../hooks/user-hooks';
-import { authStore } from '../../auth/auth-store';
+import { useDeleteUser } from '../../api/hooks/query/user-hooks';
 import { TableCell } from '../atoms/table/TableCell';
 import { TableBody } from '../atoms/table/TableBody';
+import { useAuth } from '../../auth/useAuth';
 
 export interface DataTableColumn {
   key: string;
@@ -69,7 +69,7 @@ export function DataTable<T extends { id: number }>({
   onQueryChange,
   isLoading,
 }: DataTableProps<T>) {
-  const authUser = authStore.getUser();
+  const { user: authUser } = useAuth();
   const navigate = useNavigate();
   const deleteUser = useDeleteUser();
 
@@ -281,7 +281,7 @@ export function DataTable<T extends { id: number }>({
                         >
                           <Settings size={18} />
                         </GhostButton>
-                        {typeIsUser && row.id === authUser.id ? (
+                        {typeIsUser && row.id === authUser?.id ? (
                           <span style={{ letterSpacing: 1.2 }}>{` (Ty)`}</span>
                         ) : (
                           <>

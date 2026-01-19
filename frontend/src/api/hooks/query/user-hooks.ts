@@ -1,28 +1,33 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { usersApi } from '../api/services/usersApi';
 import type {
   UserQuery,
   CreateUserDto,
   UpdateUserDto,
-} from '../api/interfaces/user-interfaces';
+} from '../../interfaces/user-interfaces';
+import useUsersApi from '../service/useUsersApi';
 
-export const useUsers = (query: UserQuery) => {
+export function useUsers(query: UserQuery) {
+  const usersApi = useUsersApi();
+
   return useQuery({
     queryKey: ['users', query],
     queryFn: () => usersApi.getAll(query),
   });
-};
+}
 
-export const useUser = (id: number) => {
+export function useUser(id: number) {
+  const usersApi = useUsersApi();
+
   return useQuery({
     queryKey: ['user', id],
     queryFn: () => usersApi.getById(id),
     enabled: !!id,
   });
-};
+}
 
-export const useCreateUser = () => {
+export function useCreateUser() {
   const queryClient = useQueryClient();
+  const usersApi = useUsersApi();
 
   return useMutation({
     mutationFn: (data: CreateUserDto) => usersApi.create(data),
@@ -30,10 +35,11 @@ export const useCreateUser = () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
-};
+}
 
-export const useUpdateUser = (id: number) => {
+export function useUpdateUser(id: number) {
   const queryClient = useQueryClient();
+  const usersApi = useUsersApi();
 
   return useMutation({
     mutationFn: (data: UpdateUserDto) => usersApi.update(id, data),
@@ -42,10 +48,11 @@ export const useUpdateUser = (id: number) => {
       queryClient.invalidateQueries({ queryKey: ['user', id] });
     },
   });
-};
+}
 
-export const useDeleteUser = () => {
+export function useDeleteUser() {
   const queryClient = useQueryClient();
+  const usersApi = useUsersApi();
 
   return useMutation({
     mutationFn: (id: number) => usersApi.delete(id),
@@ -53,4 +60,4 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
-};
+}

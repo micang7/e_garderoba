@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authApi } from '../api/services/authApi';
 import { PrimaryButton } from '../components/atoms/Button';
-import { authStore } from '../auth/auth-store';
 import { Card, Col, Container, Form, Row } from 'react-bootstrap';
 import TextInputLabeled from '../components/molecules/TextInputLabeled';
+import useAuthApi from '../api/hooks/service/useAuthApi';
+import { useAuth } from '../auth/useAuth';
 
 const Login = () => {
+  const { isAuth } = useAuth();
+  const AuthApi = useAuthApi();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -15,15 +17,15 @@ const Login = () => {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await authApi.login({ email, password });
+      await AuthApi.login({ email, password });
       navigate('/');
     } catch (err) {
       console.error(err);
     }
   }
   useEffect(() => {
-    if (authStore.getToken()) navigate('/');
-  }, [navigate]);
+    if (!isAuth) navigate('/');
+  }, [isAuth, navigate]);
 
   return (
     <Container

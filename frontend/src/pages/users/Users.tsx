@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useUsers } from '../../hooks/user-hooks';
 import {
   DataTable,
   type DataTableQuery,
@@ -8,6 +7,7 @@ import {
 import type { User } from '../../api/interfaces/user-interfaces';
 import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
+import { useUsers } from '../../api/hooks/query/user-hooks';
 
 const UsersPage = () => {
   const [query, setQuery] = useState({

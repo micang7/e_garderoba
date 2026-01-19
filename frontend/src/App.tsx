@@ -8,7 +8,7 @@ import Items from './pages/items/Items';
 // import CreateItem from './pages/items/CreateItem';
 // import ItemDetails from './pages/items/ItemDetails';
 import NotFound from './pages/NotFound';
-import { ProtectedLayout } from './auth/protected-layout';
+import ProtectedLayout from './auth/ProtectedLayout';
 
 const App = () => (
   <BrowserRouter>
