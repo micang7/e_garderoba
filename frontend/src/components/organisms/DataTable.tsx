@@ -15,9 +15,10 @@ import {
   DropdownItemText,
   DropdownMenu,
   DropdownToggle,
+  Modal,
 } from 'react-bootstrap';
 import Pagination from '../molecules/Pagination';
-import { GhostButton, SecondaryButton } from '../atoms/Button';
+import { CriticalButton, GhostButton, SecondaryButton } from '../atoms/Button';
 import SelectTextInput from '../atoms/SelectTextInput';
 import DateRangeSubmit from '../molecules/DateRangeSubmit';
 import { TableHeader } from '../atoms/table/TableHeader';
@@ -70,6 +71,8 @@ export function DataTable<T extends { id: number }>({
   const authUser = authStore.getUser();
   const navigate = useNavigate();
   const deleteUser = useDeleteUser();
+
+  const [deleteModalShow, setDeleteModalShow] = useState(false);
 
   const [activeFilterColumn, setActiveFilterColumn] = useState('');
 
@@ -254,12 +257,44 @@ export function DataTable<T extends { id: number }>({
                       {typeIsUser && row.id === authUser.id ? (
                         <span style={{ letterSpacing: 1.2 }}>{` (Ty)`}</span>
                       ) : (
-                        <GhostButton
-                          style={{ color: 'var(--bs-danger)' }}
-                          onClick={() => deleteUser.mutate(row.id as number)}
-                        >
-                          <Trash size={18} />
-                        </GhostButton>
+                        <>
+                          <GhostButton
+                            style={{ color: 'var(--bs-danger)' }}
+                            onClick={() => setDeleteModalShow(true)}
+                          >
+                            <Trash size={18} />
+                          </GhostButton>
+
+                          <Modal
+                            show={deleteModalShow}
+                            onHide={() => setDeleteModalShow(false)}
+                            centered
+                          >
+                            <Modal.Header closeButton>
+                              <Modal.Title>Potwierdzenie usunięcia</Modal.Title>
+                            </Modal.Header>
+
+                            <Modal.Body>
+                              Czy na pewno chcesz usunąć tego użytkownika?
+                            </Modal.Body>
+
+                            <Modal.Footer>
+                              <SecondaryButton
+                                onClick={() => setDeleteModalShow(false)}
+                              >
+                                Anuluj
+                              </SecondaryButton>
+                              <CriticalButton
+                                onClick={() => {
+                                  deleteUser.mutate(row.id as number);
+                                  setDeleteModalShow(false);
+                                }}
+                              >
+                                Usuń
+                              </CriticalButton>
+                            </Modal.Footer>
+                          </Modal>
+                        </>
                       )}
                     </TableCell>
                   ) : (
