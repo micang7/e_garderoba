@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './main.scss';
 import App from './App.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
 
 const queryClient = new QueryClient();
 
@@ -11,5 +12,6 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
+    <Toaster richColors position="bottom-left" />
   </StrictMode>,
 );

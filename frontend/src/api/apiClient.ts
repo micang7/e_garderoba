@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { authStore } from '../auth/auth-store';
+import { toast } from 'sonner';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -30,6 +31,8 @@ apiClient.interceptors.response.use(
       if (res.status === 401) {
         authStore.clear();
         window.location.href = '/login';
+      } else if (res.status === 403) {
+        toast.error('Brak uprawnień do wykonania tej akcji.');
       }
     }
 
