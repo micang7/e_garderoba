@@ -10,7 +10,10 @@ import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
 
 const UsersPage = () => {
-  const [query, setQuery] = useState({});
+  const [query, setQuery] = useState({
+    offset: 0,
+    limit: 10,
+  });
   const onQueryChange = (newQuery: DataTableQuery) => {
     setQuery((prevQuery) => ({
       ...prevQuery,

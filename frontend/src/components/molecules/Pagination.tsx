@@ -8,27 +8,27 @@ import { Pagination as BsPagination } from 'react-bootstrap';
 import SelectTextInput from '../atoms/SelectTextInput';
 
 interface PaginationProps {
-  offset: number;
-  onOffsetChange: (offset: number) => void;
-  limit: number;
-  onLimitChange: (limit: number) => void;
-  total: number;
+  offset?: number;
+  onOffsetChange?: (offset: number) => void;
+  limit?: number;
+  onLimitChange?: (limit: number) => void;
+  total?: number;
   limitOptions?: number[];
 }
 
 const Pagination: React.FC<PaginationProps> = ({
-  offset,
+  offset = 0,
   onOffsetChange,
-  limit,
+  limit = 10,
   onLimitChange,
-  total,
+  total = 1,
   limitOptions = [10, 25, 50, 100],
 }) => {
   const page = Math.floor(offset / limit) + 1;
   const pages = Math.max(1, Math.ceil(total / limit));
 
   const goToPage = (p: number) => {
-    onOffsetChange((p - 1) * limit);
+    onOffsetChange?.((p - 1) * limit);
   };
 
   return (
@@ -66,7 +66,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <SelectTextInput
           value={limit.toString()}
           options={limitOptions.map((o) => o.toString())}
-          onChange={(l) => onLimitChange(Number(l))}
+          onChange={(l) => onLimitChange?.(Number(l))}
         />
       </div>
     </BsPagination>

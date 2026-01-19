@@ -75,7 +75,6 @@ export function DataTable<T extends { id: number }>({
 
   const setSearch = (search: string) =>
     onQueryChange({
-      ...query,
       search: search === '' ? undefined : search,
       offset: 0,
     });
@@ -97,12 +96,14 @@ export function DataTable<T extends { id: number }>({
       sort = field;
       order = 'ASC';
     }
-    onQueryChange({ ...query, sort, order });
+    onQueryChange({ sort, order });
   };
 
   const setFilter = (field: string, value?: string) => {
-    console.log({ ...query, [field]: value, offset: 0 });
-    onQueryChange({ ...query, [field]: value, offset: 0 });
+    onQueryChange({
+      [field]: value === '' ? undefined : value,
+      offset: 0,
+    });
   };
 
   return (
@@ -282,8 +283,8 @@ export function DataTable<T extends { id: number }>({
 
       {/* PAGINATION */}
       <Pagination
-        offset={query.offset ?? 0}
-        limit={query.limit ?? 10}
+        offset={query.offset}
+        limit={query.limit}
         total={total}
         onOffsetChange={(offset) => onQueryChange({ ...query, offset })}
         onLimitChange={(limit) => onQueryChange({ ...query, limit, offset: 0 })}
