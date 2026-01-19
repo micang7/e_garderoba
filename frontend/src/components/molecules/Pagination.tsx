@@ -6,6 +6,13 @@ import {
 } from 'lucide-react';
 import { Pagination as BsPagination } from 'react-bootstrap';
 import SelectTextInput from '../atoms/SelectTextInput';
+import styled from 'styled-components';
+
+const StyledPagination = styled(BsPagination)`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
 interface PaginationProps {
   offset?: number;
@@ -32,15 +39,8 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <BsPagination>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          textAlign: 'center',
-          gap: 25,
-        }}
-      >
+    <StyledPagination>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
         <BsPagination.First disabled={page === 1} onClick={() => goToPage(1)}>
           <ChevronFirst />
         </BsPagination.First>
@@ -69,7 +69,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onChange={(l) => onLimitChange?.(Number(l))}
         />
       </div>
-    </BsPagination>
+    </StyledPagination>
   );
 };
 

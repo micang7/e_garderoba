@@ -29,6 +29,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDeleteUser } from '../../hooks/user-hooks';
 import { authStore } from '../../auth/auth-store';
 import { TableCell } from '../atoms/table/TableCell';
+import { TableBody } from '../atoms/table/TableBody';
 
 export interface DataTableColumn {
   key: string;
@@ -110,7 +111,14 @@ export function DataTable<T extends { id: number }>({
   };
 
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '1em',
+      }}
+    >
       {/* SEARCH */}
       <TextInputSubmit
         value={query.search ?? ''}
@@ -121,200 +129,224 @@ export function DataTable<T extends { id: number }>({
       />
 
       {/* TABLE */}
-      <Table striped bordered hover>
-        <TableHead>
-          <TableRow>
-            {columns.map((c) => (
-              <TableHeader key={String(c.key)}>
-                {c.label}
+      <div style={{ overflow: 'auto' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {columns.map((c) => (
+                <TableHeader key={String(c.key)}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {c.label}
 
-                <div style={{ display: 'flex' }}>
-                  {/* SORT */}
-                  {c.sortable && (
-                    <GhostButton
-                      style={{ padding: '0.1em 0.2em', marginLeft: '0.5em' }}
-                      onClick={() => setSortOrder(String(c.key))}
-                    >
-                      {query.order === undefined || query.sort !== c.key ? (
-                        <ArrowDownUp size={18} />
-                      ) : query.order === 'ASC' ? (
-                        <ArrowDownAZ size={18} />
-                      ) : (
-                        <ArrowDownZA size={18} />
-                      )}
-                    </GhostButton>
-                  )}
-
-                  {/* FILTER */}
-                  {c.filterable && (
-                    <Dropdown
-                      show={activeFilterColumn === String(c.key)}
-                      align="end"
-                      onToggle={() =>
-                        setActiveFilterColumn(
-                          activeFilterColumn === String(c.key)
-                            ? ''
-                            : String(c.key),
-                        )
-                      }
-                    >
-                      <DropdownToggle
-                        as={GhostButton}
-                        style={{ padding: '0.1em 0.2em', marginLeft: '0.5em' }}
-                        id={`filter-toggle-${String(c.key)}`}
-                      >
-                        <Funnel size={18} />
-                      </DropdownToggle>
-                      <DropdownMenu>
-                        <div
+                    <div style={{ display: 'flex' }}>
+                      {/* SORT */}
+                      {c.sortable && (
+                        <GhostButton
                           style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            paddingRight: '0.5em',
+                            padding: '0.1em 0.2em',
+                            marginLeft: '0.5em',
                           }}
+                          onClick={() => setSortOrder(String(c.key))}
                         >
-                          <DropdownItemText>Filtruj</DropdownItemText>
-                          <CloseButton
-                            onClick={() => setActiveFilterColumn('')}
-                          />
-                        </div>
-                        {c.type === 'enum' ? (
-                          <DropdownItem>
+                          {query.order === undefined || query.sort !== c.key ? (
+                            <ArrowDownUp size={18} />
+                          ) : query.order === 'ASC' ? (
+                            <ArrowDownAZ size={18} />
+                          ) : (
+                            <ArrowDownZA size={18} />
+                          )}
+                        </GhostButton>
+                      )}
+
+                      {/* FILTER */}
+                      {c.filterable && (
+                        <Dropdown
+                          show={activeFilterColumn === String(c.key)}
+                          align="end"
+                          onToggle={() =>
+                            setActiveFilterColumn(
+                              activeFilterColumn === String(c.key)
+                                ? ''
+                                : String(c.key),
+                            )
+                          }
+                        >
+                          <DropdownToggle
+                            as={GhostButton}
+                            style={{
+                              padding: '0.1em 0.2em',
+                              marginLeft: '0.5em',
+                            }}
+                            id={`filter-toggle-${String(c.key)}`}
+                          >
+                            <Funnel size={18} />
+                          </DropdownToggle>
+                          <DropdownMenu>
                             <div
                               style={{
-                                display: 'grid',
-                                gap: '0.5em',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                paddingRight: '0.5em',
                               }}
                             >
-                              <SelectTextInput
-                                options={c.enumValues ?? []}
-                                value={query[c.key] as string}
-                                onChange={(value) => setFilter(c.key, value)}
-                                onClick={(e) => e.stopPropagation()}
+                              <DropdownItemText>Filtruj</DropdownItemText>
+                              <CloseButton
+                                onClick={() => setActiveFilterColumn('')}
                               />
-                              <SecondaryButton
-                                onClick={() => setFilter(c.key, undefined)}
-                              >
-                                Wyczyść
-                              </SecondaryButton>
                             </div>
-                          </DropdownItem>
-                        ) : c.type === 'string' ? (
-                          <DropdownItem>
-                            <TextInputSubmit
-                              value={(query[c.key] as string) ?? ''}
-                              onSubmit={(value) => setFilter(c.key, value)}
-                              onClick={(e: React.FormEvent) =>
-                                e.stopPropagation()
-                              }
-                              clearButtonLabel="Wyczyść"
-                              submitButtonLabel="Zastosuj"
-                            />
-                          </DropdownItem>
-                        ) : c.type === 'date' ? (
-                          <DropdownItem>
-                            <DateRangeSubmit
-                              startDate={
-                                (query[`${c.key}From`] as string) ?? ''
-                              }
-                              endDate={(query[`${c.key}To`] as string) ?? ''}
-                              onSubmit={(startDate, endDate) => {
-                                setFilter(`${c.key}From`, startDate);
-                                setFilter(`${c.key}To`, endDate);
-                              }}
-                              clearButtonText="Wyczyść"
-                              submitButtonText="Zastosuj"
-                              onClick={(e: React.FormEvent) =>
-                                e.stopPropagation()
-                              }
-                            />
-                          </DropdownItem>
-                        ) : null}
-                      </DropdownMenu>
-                    </Dropdown>
-                  )}
-                </div>
-              </TableHeader>
-            ))}
-          </TableRow>
-        </TableHead>
-        <tbody>
-          {!isLoading && data?.length ? (
-            data?.map((row: { [key: string]: unknown; id: number }) => (
-              <TableRow key={row.id}>
-                {columns.map((c) =>
-                  c.type === 'actions' ? (
-                    <TableCell
-                      key={String(c.key)}
-                      style={{ display: 'flex', gap: '0.5em' }}
-                    >
-                      <GhostButton
-                        style={{ color: 'var(--bs-primary)' }}
-                        onClick={() => navigate(`/users/${row.id}`)}
-                      >
-                        <Settings size={18} />
-                      </GhostButton>
-                      {typeIsUser && row.id === authUser.id ? (
-                        <span style={{ letterSpacing: 1.2 }}>{` (Ty)`}</span>
-                      ) : (
-                        <>
-                          <GhostButton
-                            style={{ color: 'var(--bs-danger)' }}
-                            onClick={() => setDeleteModalShow(true)}
-                          >
-                            <Trash size={18} />
-                          </GhostButton>
-
-                          <Modal
-                            show={deleteModalShow}
-                            onHide={() => setDeleteModalShow(false)}
-                            centered
-                          >
-                            <Modal.Header closeButton>
-                              <Modal.Title>Potwierdzenie usunięcia</Modal.Title>
-                            </Modal.Header>
-
-                            <Modal.Body>
-                              Czy na pewno chcesz usunąć tego użytkownika?
-                            </Modal.Body>
-
-                            <Modal.Footer>
-                              <SecondaryButton
-                                onClick={() => setDeleteModalShow(false)}
-                              >
-                                Anuluj
-                              </SecondaryButton>
-                              <CriticalButton
-                                onClick={() => {
-                                  deleteUser.mutate(row.id as number);
-                                  setDeleteModalShow(false);
-                                }}
-                              >
-                                Usuń
-                              </CriticalButton>
-                            </Modal.Footer>
-                          </Modal>
-                        </>
+                            {c.type === 'enum' ? (
+                              <DropdownItem>
+                                <div
+                                  style={{
+                                    display: 'grid',
+                                    gap: '0.5em',
+                                  }}
+                                >
+                                  <SelectTextInput
+                                    options={c.enumValues ?? []}
+                                    value={query[c.key] as string}
+                                    onChange={(value) =>
+                                      setFilter(c.key, value)
+                                    }
+                                    onClick={(e) => e.stopPropagation()}
+                                  />
+                                  <SecondaryButton
+                                    onClick={() => setFilter(c.key, undefined)}
+                                  >
+                                    Wyczyść
+                                  </SecondaryButton>
+                                </div>
+                              </DropdownItem>
+                            ) : c.type === 'string' ? (
+                              <DropdownItem>
+                                <TextInputSubmit
+                                  value={(query[c.key] as string) ?? ''}
+                                  onSubmit={(value) => setFilter(c.key, value)}
+                                  onClick={(e: React.FormEvent) =>
+                                    e.stopPropagation()
+                                  }
+                                  clearButtonLabel="Wyczyść"
+                                  submitButtonLabel="Zastosuj"
+                                />
+                              </DropdownItem>
+                            ) : c.type === 'date' ? (
+                              <DropdownItem>
+                                <DateRangeSubmit
+                                  startDate={
+                                    (query[`${c.key}From`] as string) ?? ''
+                                  }
+                                  endDate={
+                                    (query[`${c.key}To`] as string) ?? ''
+                                  }
+                                  onSubmit={(startDate, endDate) => {
+                                    setFilter(`${c.key}From`, startDate);
+                                    setFilter(`${c.key}To`, endDate);
+                                  }}
+                                  clearButtonText="Wyczyść"
+                                  submitButtonText="Zastosuj"
+                                  onClick={(e: React.FormEvent) =>
+                                    e.stopPropagation()
+                                  }
+                                />
+                              </DropdownItem>
+                            ) : null}
+                          </DropdownMenu>
+                        </Dropdown>
                       )}
-                    </TableCell>
-                  ) : (
-                    <td key={String(c.key)}>{String(row[c.key])}</td>
-                  ),
-                )}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                style={{ textAlign: 'center' }}
-              >
-                Brak wyników
-              </TableCell>
+                    </div>
+                  </div>
+                </TableHeader>
+              ))}
             </TableRow>
-          )}
-        </tbody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {!isLoading && data?.length ? (
+              data?.map((row: { [key: string]: unknown; id: number }) => (
+                <TableRow key={row.id}>
+                  {columns.map((c) =>
+                    c.type === 'actions' ? (
+                      <TableCell
+                        key={String(c.key)}
+                        style={{ display: 'flex', gap: '0.5em' }}
+                      >
+                        <GhostButton
+                          style={{ color: 'var(--bs-primary)' }}
+                          onClick={() => navigate(`/users/${row.id}`)}
+                        >
+                          <Settings size={18} />
+                        </GhostButton>
+                        {typeIsUser && row.id === authUser.id ? (
+                          <span style={{ letterSpacing: 1.2 }}>{` (Ty)`}</span>
+                        ) : (
+                          <>
+                            <GhostButton
+                              style={{ color: 'var(--bs-danger)' }}
+                              onClick={() => setDeleteModalShow(true)}
+                            >
+                              <Trash size={18} />
+                            </GhostButton>
+
+                            <Modal
+                              show={deleteModalShow}
+                              onHide={() => setDeleteModalShow(false)}
+                              centered
+                            >
+                              <Modal.Header closeButton>
+                                <Modal.Title>
+                                  Potwierdzenie usunięcia
+                                </Modal.Title>
+                              </Modal.Header>
+
+                              <Modal.Body>
+                                Czy na pewno chcesz usunąć tego użytkownika?
+                              </Modal.Body>
+
+                              <Modal.Footer>
+                                <SecondaryButton
+                                  onClick={() => setDeleteModalShow(false)}
+                                >
+                                  Anuluj
+                                </SecondaryButton>
+                                <CriticalButton
+                                  onClick={() => {
+                                    deleteUser.mutate(row.id as number);
+                                    setDeleteModalShow(false);
+                                  }}
+                                >
+                                  Usuń
+                                </CriticalButton>
+                              </Modal.Footer>
+                            </Modal>
+                          </>
+                        )}
+                      </TableCell>
+                    ) : (
+                      <TableCell key={String(c.key)}>
+                        {String(row[c.key])}
+                      </TableCell>
+                    ),
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  style={{ textAlign: 'center' }}
+                >
+                  Brak wyników
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* PAGINATION */}
       <Pagination
@@ -324,6 +356,6 @@ export function DataTable<T extends { id: number }>({
         onOffsetChange={(offset) => onQueryChange({ ...query, offset })}
         onLimitChange={(limit) => onQueryChange({ ...query, limit, offset: 0 })}
       />
-    </>
+    </div>
   );
 }

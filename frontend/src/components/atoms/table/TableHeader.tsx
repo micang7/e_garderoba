@@ -1,30 +1,13 @@
-export interface TableHeaderProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
-  children: React.ReactNode;
-  innerClassName?: string;
-  innerStyle?: React.CSSProperties;
-}
+import styled from 'styled-components';
 
-export const TableHeader: React.FC<TableHeaderProps> = ({
-  children,
-  className,
-  style,
-  innerClassName,
-  innerStyle,
-  ...rest
-}) => {
-  return (
-    <th className={className} style={style} {...rest}>
-      <div
-        className={innerClassName}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          ...innerStyle,
-        }}
-      >
-        {children}
-      </div>
-    </th>
-  );
-};
+export const TableHeader = styled.th`
+  text-align: left;
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+
+  border-right: 1px solid #ddd;
+  &:last-child {
+    border-right: none;
+  }
+`;
