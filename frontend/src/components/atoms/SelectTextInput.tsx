@@ -1,11 +1,14 @@
-import { FormSelect } from 'react-bootstrap';
+import { Form, FormSelect } from 'react-bootstrap';
 
 interface SelectTextInputProps {
   value: string;
   options: string[];
-  onChange: (value: string) => void;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onClick?: (e: React.FormEvent) => void;
   placeholder?: string;
+  errorMessage?: string;
+  required?: boolean;
+  disabled?: boolean;
 }
 
 const SelectTextInput: React.FC<SelectTextInputProps> = ({
@@ -14,20 +17,33 @@ const SelectTextInput: React.FC<SelectTextInputProps> = ({
   onChange,
   onClick,
   placeholder,
+  errorMessage,
+  required,
+  disabled,
 }) => {
   return (
-    <FormSelect
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      onClick={onClick}
-    >
-      {placeholder && <option>{placeholder}</option>}
-      {options?.map((option, index) => (
-        <option key={index} value={option}>
-          {option}
-        </option>
-      ))}
-    </FormSelect>
+    <div>
+      <FormSelect
+        value={value}
+        onChange={onChange}
+        onClick={onClick}
+        isInvalid={!!errorMessage}
+        required={required}
+        disabled={disabled}
+      >
+        {placeholder && <option>{placeholder}</option>}
+        {options?.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </FormSelect>
+      {errorMessage && (
+        <Form.Control.Feedback type="invalid">
+          {errorMessage}
+        </Form.Control.Feedback>
+      )}
+    </div>
   );
 };
 

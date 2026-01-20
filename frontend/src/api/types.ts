@@ -116,8 +116,11 @@ export interface components {
             email: string;
             /** @example 123456789 */
             phone: string;
-            /** @example administrator */
-            role: string;
+            /**
+             * @example administrator
+             * @enum {string}
+             */
+            role: "tancerz" | "kierownik" | "administrator";
             /**
              * Format: date-time
              * @example 2026-01-17T14:34:11.876Z
@@ -179,9 +182,9 @@ export interface components {
              */
             role?: "tancerz" | "kierownik" | "administrator";
             /** @example  */
-            createdFrom?: string;
+            createdAtFrom?: string;
             /** @example  */
-            createdTo?: string;
+            createdAtTo?: string;
         };
         MetaDto: {
             /** @example 1 */
@@ -287,9 +290,9 @@ export interface components {
              */
             gender?: "męski" | "damski" | "uniwersalny";
             /** @example  */
-            createdFrom?: string;
+            createdAtFrom?: string;
             /** @example  */
-            createdTo?: string;
+            createdAtTo?: string;
         };
         ItemListResponseDto: {
             meta: components["schemas"]["MetaDto"];
@@ -331,8 +334,8 @@ export interface operations {
                 lastName?: string;
                 email?: string;
                 role?: "tancerz" | "kierownik" | "administrator";
-                createdFrom?: string;
-                createdTo?: string;
+                createdAtFrom?: string;
+                createdAtTo?: string;
             };
             header?: never;
             path?: never;
@@ -640,8 +643,8 @@ export interface operations {
                 code?: string;
                 name?: string;
                 gender?: "męski" | "damski" | "uniwersalny";
-                createdFrom?: string;
-                createdTo?: string;
+                createdAtFrom?: string;
+                createdAtTo?: string;
             };
             header?: never;
             path?: never;

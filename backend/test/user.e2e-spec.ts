@@ -202,9 +202,9 @@ describe('UserController (e2e)', () => {
       expect(res.body.data[0].role).toBe(UserRole.MANAGER);
     });
 
-    it('filters by createdFrom and createdTo', async () => {
+    it('filters by createdAtFrom and createdAtTo', async () => {
       const res = await request(app.getHttpServer())
-        .get('/users?createdFrom=2025-06-06&createdTo=2026-01-01')
+        .get('/users?createdAtFrom=2025-06-06&createdAtTo=2026-01-01')
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
 

@@ -6,41 +6,41 @@ import {
 } from 'lucide-react';
 import { Pagination as BsPagination } from 'react-bootstrap';
 import SelectTextInput from '../atoms/SelectTextInput';
+import styled from 'styled-components';
+
+const StyledPagination = styled(BsPagination)`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
 interface PaginationProps {
-  offset: number;
-  onOffsetChange: (offset: number) => void;
-  limit: number;
-  onLimitChange: (limit: number) => void;
-  total: number;
+  offset?: number;
+  onOffsetChange?: (offset: number) => void;
+  limit?: number;
+  onLimitChange?: (limit: number) => void;
+  total?: number;
   limitOptions?: number[];
 }
 
 const Pagination: React.FC<PaginationProps> = ({
-  offset,
+  offset = 0,
   onOffsetChange,
-  limit,
+  limit = 10,
   onLimitChange,
-  total,
+  total = 1,
   limitOptions = [10, 25, 50, 100],
 }) => {
   const page = Math.floor(offset / limit) + 1;
   const pages = Math.max(1, Math.ceil(total / limit));
 
   const goToPage = (p: number) => {
-    onOffsetChange((p - 1) * limit);
+    onOffsetChange?.((p - 1) * limit);
   };
 
   return (
-    <BsPagination>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          textAlign: 'center',
-          gap: 25,
-        }}
-      >
+    <StyledPagination>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
         <BsPagination.First disabled={page === 1} onClick={() => goToPage(1)}>
           <ChevronFirst />
         </BsPagination.First>
@@ -66,10 +66,10 @@ const Pagination: React.FC<PaginationProps> = ({
         <SelectTextInput
           value={limit.toString()}
           options={limitOptions.map((o) => o.toString())}
-          onChange={(l) => onLimitChange(Number(l))}
+          onChange={(l) => onLimitChange?.(Number(l))}
         />
       </div>
-    </BsPagination>
+    </StyledPagination>
   );
 };
 

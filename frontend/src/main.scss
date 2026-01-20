@@ -3,4 +3,8 @@ body {
   height: 100vh;
 }
 
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
 @import 'bootstrap/scss/bootstrap';

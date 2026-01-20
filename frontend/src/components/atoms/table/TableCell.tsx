@@ -1,28 +1,7 @@
-export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
-  children: React.ReactNode;
-  innerClassName?: string;
-  innerStyle?: React.CSSProperties;
-}
+import styled from 'styled-components';
 
-export const TableCell: React.FC<TableCellProps> = ({
-  children,
-  className,
-  style,
-  innerClassName,
-  innerStyle,
-  ...rest
-}) => {
-  return (
-    <td className={className} style={style} {...rest}>
-      <div
-        className={innerClassName}
-        style={{
-          display: 'block',
-          ...innerStyle,
-        }}
-      >
-        {children}
-      </div>
-    </td>
-  );
-};
+export const TableCell = styled.td`
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+`;

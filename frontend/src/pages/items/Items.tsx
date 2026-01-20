@@ -1,16 +1,21 @@
 import { useState } from 'react';
-import { useItems } from '../../hooks/item-hooks';
 import {
   DataTable,
   type DataTableQuery,
   type DataTableColumn,
 } from '../../components/organisms/DataTable';
-import type { Item } from '../../api/interfaces/item-interfaces';
 import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
+import Page from '../Page';
+import { PrimaryButton } from '../../components/atoms/Button';
+import { useDeleteItem, useItems } from '../../api/hooks/query/item-hooks';
+import type { Item } from '../../api/interfaces/item-interfaces';
 
-const ItemsPage = () => {
-  const [query, setQuery] = useState({});
+export default function ItemsPage() {
+  const [query, setQuery] = useState({
+    offset: 0,
+    limit: 10,
+  });
   const onQueryChange = (newQuery: DataTableQuery) => {
     setQuery((prevQuery) => ({
       ...prevQuery,
@@ -19,6 +24,7 @@ const ItemsPage = () => {
   };
 
   const { data, isLoading, error } = useItems(query);
+  const deleteItem = useDeleteItem();
 
   const columns: DataTableColumn[] = [
     {
@@ -64,6 +70,8 @@ const ItemsPage = () => {
       key: 'actions',
       type: 'actions',
       label: '',
+      href: 'items',
+      onDelete: deleteItem.mutate,
     },
   ];
 
@@ -71,19 +79,28 @@ const ItemsPage = () => {
   if (error) toast.error('Błąd serwera. Spróbuj ponownie później.');
 
   return (
-    <div>
-      <h2>Lista elementów</h2>
+    <Page>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '30px',
+        }}
+      >
+        <h2>Elementy</h2>
+        <PrimaryButton href="/users/create">Dodaj element</PrimaryButton>
+      </div>
 
       <DataTable<Item>
         data={data?.data}
+        typeIsUser
         total={data?.meta.total || 0}
         columns={columns}
         query={query}
         onQueryChange={onQueryChange}
         isLoading={isLoading}
       />
-    </div>
+    </Page>
   );
-};
-
-export default ItemsPage;
+}

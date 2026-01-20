@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useUsers } from '../../hooks/user-hooks';
 import {
   DataTable,
   type DataTableQuery,
@@ -8,9 +7,15 @@ import {
 import type { User } from '../../api/interfaces/user-interfaces';
 import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
+import { useDeleteUser, useUsers } from '../../api/hooks/query/user-hooks';
+import Page from '../Page';
+import { PrimaryButton } from '../../components/atoms/Button';
 
-const UsersPage = () => {
-  const [query, setQuery] = useState({});
+export default function UsersPage() {
+  const [query, setQuery] = useState({
+    offset: 0,
+    limit: 10,
+  });
   const onQueryChange = (newQuery: DataTableQuery) => {
     setQuery((prevQuery) => ({
       ...prevQuery,
@@ -19,6 +24,8 @@ const UsersPage = () => {
   };
 
   const { data, isLoading, error } = useUsers(query);
+
+  const deleteUser = useDeleteUser();
 
   const columns: DataTableColumn[] = [
     {
@@ -59,6 +66,8 @@ const UsersPage = () => {
       key: 'actions',
       type: 'actions',
       label: '',
+      href: 'users',
+      onDelete: deleteUser.mutate,
     },
   ];
 
@@ -66,8 +75,18 @@ const UsersPage = () => {
   if (error) toast.error('Błąd serwera. Spróbuj ponownie później.');
 
   return (
-    <div>
-      <h2>Lista użytkowników</h2>
+    <Page>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '30px',
+        }}
+      >
+        <h2>Użytkownicy</h2>
+        <PrimaryButton href="/users/create">Dodaj użytkownika</PrimaryButton>
+      </div>
 
       <DataTable<User>
         data={data?.data}
@@ -78,8 +97,6 @@ const UsersPage = () => {
         onQueryChange={onQueryChange}
         isLoading={isLoading}
       />
-    </div>
+    </Page>
   );
-};
-
-export default UsersPage;
+}
