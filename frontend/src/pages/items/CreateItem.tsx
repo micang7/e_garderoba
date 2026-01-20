@@ -1,10 +1,8 @@
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import Page from '../Page';
-import type { CreateUserDto } from '../../api/interfaces/user-interfaces';
 import TextInputLabeled from '../../components/molecules/TextInputLabeled';
 import { PrimaryButton } from '../../components/atoms/Button';
 import SelectTextInputLabeled from '../../components/molecules/SelectTextInputLabeled';
-import { useCreateUser } from '../../api/hooks/query/user-hooks';
 import { useState } from 'react';
 import type { CreateItemDto } from '../../api/interfaces/item-interfaces';
 import { useCreateItem } from '../../api/hooks/query/item-hooks';
