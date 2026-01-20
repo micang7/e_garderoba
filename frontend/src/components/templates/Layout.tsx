@@ -30,7 +30,7 @@ export default function Layout({ sidenavOptions, children }: LayoutProps) {
       <Row className="h-100">
         {/* SIDENAV */}
         <Col
-          xs={12}
+          xs={0}
           md={3}
           lg={2}
           className="d-flex flex-column border-end bg-light p-0"

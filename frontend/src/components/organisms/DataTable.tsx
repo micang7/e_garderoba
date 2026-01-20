@@ -38,7 +38,8 @@ export interface DataTableColumn {
   sortable?: boolean;
   filterable?: boolean;
   enumValues?: string[];
-  actions?: { element: unknown; callback: unknown }[];
+  onDelete?: (id: number) => void;
+  href?: string;
 }
 
 export interface DataTableQuery {
@@ -122,7 +123,7 @@ export function DataTable<T extends { id: number }>({
       />
 
       {/* TABLE */}
-      <div style={{ margin: '20px 0', overflow: 'auto' }}>
+      <div style={{ margin: '20px 0', minHeight: '350px', overflow: 'auto' }}>
         <Table>
           <TableHead className="sticky-top">
             <TableRow>
@@ -186,6 +187,7 @@ export function DataTable<T extends { id: number }>({
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 paddingRight: '0.5em',
+                                minWidth: '200px',
                               }}
                             >
                               <DropdownItemText>Filtruj</DropdownItemText>
@@ -204,8 +206,8 @@ export function DataTable<T extends { id: number }>({
                                   <SelectTextInput
                                     options={c.enumValues ?? []}
                                     value={query[c.key] as string}
-                                    onChange={(value) =>
-                                      setFilter(c.key, value)
+                                    onChange={(e) =>
+                                      setFilter(c.key, e.target.value)
                                     }
                                     onClick={(e) => e.stopPropagation()}
                                   />
@@ -270,7 +272,7 @@ export function DataTable<T extends { id: number }>({
                       >
                         <GhostButton
                           style={{ color: 'var(--bs-primary)' }}
-                          onClick={() => navigate(`/users/${row.id}`)}
+                          onClick={() => navigate(`/${c.href}/${row.id}`)}
                         >
                           <Settings size={18} />
                         </GhostButton>
@@ -297,7 +299,7 @@ export function DataTable<T extends { id: number }>({
                               </Modal.Header>
 
                               <Modal.Body>
-                                Czy na pewno chcesz usunąć tego użytkownika?
+                                Czy na pewno chcesz usunąć ten rekord?
                               </Modal.Body>
 
                               <Modal.Footer>
@@ -308,7 +310,7 @@ export function DataTable<T extends { id: number }>({
                                 </SecondaryButton>
                                 <CriticalButton
                                   onClick={() => {
-                                    deleteUser.mutate(row.id as number);
+                                    c.onDelete?.(row.id as number);
                                     setDeleteModalShow(false);
                                   }}
                                 >
@@ -321,7 +323,9 @@ export function DataTable<T extends { id: number }>({
                       </TableCell>
                     ) : (
                       <TableCell key={String(c.key)}>
-                        {String(row[c.key])}
+                        {c.type === 'date'
+                          ? new Date(row[c.key] as string).toLocaleDateString()
+                          : String(row[c.key])}
                       </TableCell>
                     ),
                   )}

@@ -26,17 +26,33 @@ export default function useApiClient() {
   apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
-      const res = error?.response;
-      if (res) {
-        if (res.status === 401) {
-          clear();
-          navigate('/login', { replace: true });
-        } else if (res.status === 403) {
-          toast.error('Brak uprawnień do wykonania tej akcji.');
-        }
+      if (!error.response) {
+        toast.error('Brak połączenia z serwerem.');
+        return Promise.reject({
+          status: 500,
+          data: { error: 'Brak połączenia z serwerem.' },
+        });
       }
 
-      return Promise.reject(error);
+      const { status, data } = error.response;
+      switch (status) {
+        case 401:
+          if (data.error !== 'Unauthorized') break;
+          clear();
+          navigate('/login', { replace: true });
+          toast.error('Sesja wygasła. Zaloguj się ponownie.');
+          break;
+        case 403:
+          toast.error('Brak uprawnień do wykonania tej akcji.');
+          break;
+        case 404:
+          toast.error('Nie znaleziono zasobu.');
+          break;
+        case 500:
+          toast.error('Błąd serwera. Spróbuj ponownie później.');
+          break;
+      }
+      return Promise.reject({ status, data });
     },
   );
 

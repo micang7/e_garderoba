@@ -10,19 +10,25 @@ interface TextInputLabeledProps {
   name?: string;
   required?: boolean;
   className?: string;
+  errorMessage?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  plaintext?: boolean;
+  disabled?: boolean;
 }
 
 const TextInputLabeled = ({
   id,
   label,
   value,
-  type,
+  type = 'text',
   placeholder,
   name,
-  required,
+  required = true,
   className,
+  errorMessage,
   onChange,
+  plaintext,
+  disabled,
 }: TextInputLabeledProps) => {
   return (
     <Form.Group className="mb-3">
@@ -30,14 +36,24 @@ const TextInputLabeled = ({
 
       <TextInput
         id={id}
-        name={name}
+        name={name ?? id}
         type={type}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
         className={className}
         required={required}
+        isInvalid={errorMessage}
+        plaintext={plaintext}
+        readOnly={plaintext}
+        disabled={disabled}
       />
+
+      {errorMessage && (
+        <Form.Control.Feedback type="invalid">
+          {errorMessage}
+        </Form.Control.Feedback>
+      )}
     </Form.Group>
   );
 };

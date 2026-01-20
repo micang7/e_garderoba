@@ -7,8 +7,9 @@ import {
 import type { User } from '../../api/interfaces/user-interfaces';
 import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
-import { useUsers } from '../../api/hooks/query/user-hooks';
+import { useDeleteUser, useUsers } from '../../api/hooks/query/user-hooks';
 import Page from '../Page';
+import { PrimaryButton } from '../../components/atoms/Button';
 
 export default function UsersPage() {
   const [query, setQuery] = useState({
@@ -23,6 +24,8 @@ export default function UsersPage() {
   };
 
   const { data, isLoading, error } = useUsers(query);
+
+  const deleteUser = useDeleteUser();
 
   const columns: DataTableColumn[] = [
     {
@@ -63,6 +66,8 @@ export default function UsersPage() {
       key: 'actions',
       type: 'actions',
       label: '',
+      href: 'users',
+      onDelete: deleteUser.mutate,
     },
   ];
 
@@ -71,7 +76,17 @@ export default function UsersPage() {
 
   return (
     <Page>
-      <h2 style={{ marginBottom: '30px' }}>Użytkownicy</h2>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '30px',
+        }}
+      >
+        <h2>Użytkownicy</h2>
+        <PrimaryButton href="/users/create">Dodaj użytkownika</PrimaryButton>
+      </div>
 
       <DataTable<User>
         data={data?.data}
