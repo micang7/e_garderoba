@@ -7,7 +7,7 @@ interface AuthContextType {
   setToken: (token: string) => void;
   setUser: (user: User) => void;
   clear: () => void;
-  isAuth: () => boolean;
+  isAuth: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(

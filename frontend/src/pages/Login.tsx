@@ -24,7 +24,7 @@ const Login = () => {
     }
   }
   useEffect(() => {
-    if (!isAuth) navigate('/');
+    if (isAuth) navigate('/');
   }, [isAuth, navigate]);
 
   return (

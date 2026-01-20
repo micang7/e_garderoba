@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserState(null);
   };
 
-  const isAuth = () => !!token;
+  const isAuth = !!token;
 
   return (
     <AuthContext.Provider

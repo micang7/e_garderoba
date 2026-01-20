@@ -111,14 +111,7 @@ export function DataTable<T extends { id: number }>({
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '1em',
-      }}
-    >
+    <div>
       {/* SEARCH */}
       <TextInputSubmit
         value={query.search ?? ''}
@@ -129,9 +122,9 @@ export function DataTable<T extends { id: number }>({
       />
 
       {/* TABLE */}
-      <div style={{ overflow: 'auto' }}>
+      <div style={{ margin: '20px 0', overflow: 'auto' }}>
         <Table>
-          <TableHead>
+          <TableHead className="sticky-top">
             <TableRow>
               {columns.map((c) => (
                 <TableHeader key={String(c.key)}>

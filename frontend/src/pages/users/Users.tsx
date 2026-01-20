@@ -8,8 +8,9 @@ import type { User } from '../../api/interfaces/user-interfaces';
 import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
 import { useUsers } from '../../api/hooks/query/user-hooks';
+import Page from '../Page';
 
-const UsersPage = () => {
+export default function UsersPage() {
   const [query, setQuery] = useState({
     offset: 0,
     limit: 10,
@@ -69,8 +70,8 @@ const UsersPage = () => {
   if (error) toast.error('Błąd serwera. Spróbuj ponownie później.');
 
   return (
-    <div>
-      <h2>Lista użytkowników</h2>
+    <Page>
+      <h2 style={{ marginBottom: '30px' }}>Użytkownicy</h2>
 
       <DataTable<User>
         data={data?.data}
@@ -81,8 +82,6 @@ const UsersPage = () => {
         onQueryChange={onQueryChange}
         isLoading={isLoading}
       />
-    </div>
+    </Page>
   );
-};
-
-export default UsersPage;
+}

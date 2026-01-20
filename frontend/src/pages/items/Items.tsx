@@ -9,7 +9,7 @@ import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
 import { useItems } from '../../api/hooks/query/item-hooks';
 
-const ItemsPage = () => {
+export default function ItemsPage() {
   const [query, setQuery] = useState({});
   const onQueryChange = (newQuery: DataTableQuery) => {
     setQuery((prevQuery) => ({
@@ -84,6 +84,4 @@ const ItemsPage = () => {
       />
     </div>
   );
-};
-
-export default ItemsPage;
+}
