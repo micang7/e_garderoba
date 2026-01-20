@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ItemModule } from './item/item.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { ItemModule } from './item/item.module';
         username: config.getOrThrow('POSTGRES_USER'),
         password: config.getOrThrow('POSTGRES_PASSWORD'),
         database: config.getOrThrow('POSTGRES_DB'),
-        autoLoadEntities: true,
+        entities: [__dirname + '/**/*.entity.{js,ts}'],
         synchronize: process.env.NODE_ENV !== 'production',
         dropSchema: process.env.NODE_ENV === 'test',
       }),
@@ -29,6 +30,7 @@ import { ItemModule } from './item/item.module';
     UserModule,
     AuthModule,
     ItemModule,
+    EventModule,
   ],
 })
 export class AppModule {}

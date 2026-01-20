@@ -1,5 +1,12 @@
+import { EventItem } from '../../event/entities/eventItem.entity';
 import { ItemGender } from '../enums/item-gender.enum';
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('items')
 export class Item {
@@ -31,4 +38,7 @@ export class Item {
     default: () => 'LOCALTIMESTAMP',
   })
   createdAt: Date;
+
+  @OneToMany(() => EventItem, (eventItem) => eventItem.item, { cascade: true })
+  events: EventItem[];
 }

@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
 import { UserRole } from '../enums/user-role.enum';
+import { Event } from '../../event/entities/event.entity';
 
 @Entity('users')
 export class User {
@@ -39,4 +41,10 @@ export class User {
     default: () => 'LOCALTIMESTAMP',
   })
   createdAt: Date;
+
+  @OneToMany(() => Event, (event) => event.user, { cascade: true })
+  events: Event[];
+
+  @OneToMany(() => Event, (event) => event.approvedBy, { cascade: true })
+  approvedEvents: Event[];
 }
