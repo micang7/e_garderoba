@@ -18,7 +18,11 @@
     "test:debug": "cross-env NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
     "db:reset:dev": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register src/database/scripts/reset-dev.ts",
-    "db:seed:prod": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register src/database/scripts/seed-prod.ts"
+    "db:seed:prod": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register src/database/scripts/seed-prod.ts",
+    "mg:gen": "cross-env NODE_ENV=development ts-node ./node_modules/typeorm/cli.js migration:generate src/database/migrations/name -d src/database/data-source.ts",
+    "mg:create": "cross-env NODE_ENV=development ts-node ./node_modules/typeorm/cli.js migration:create src/database/migrations/name",
+    "mg:run": "cross-env NODE_ENV=development ts-node ./node_modules/typeorm/cli.js migration:run -d src/database/data-source.ts",
+    "mg:revert": "cross-env NODE_ENV=development ts-node ./node_modules/typeorm/cli.js migration:revert -d src/database/data-source.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

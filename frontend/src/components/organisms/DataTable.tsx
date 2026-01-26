@@ -26,7 +26,6 @@ import { TableRow } from '../atoms/table/TableRow';
 import { Table } from '../atoms/table/Table';
 import { TableHead } from '../atoms/table/TableHead';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteUser } from '../../api/hooks/query/user-hooks';
 import { TableCell } from '../atoms/table/TableCell';
 import { TableBody } from '../atoms/table/TableBody';
 import { useAuth } from '../../auth/useAuth';
@@ -72,7 +71,6 @@ export function DataTable<T extends { id: number }>({
 }: DataTableProps<T>) {
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
-  const deleteUser = useDeleteUser();
 
   const [deleteModalShow, setDeleteModalShow] = useState(false);
 

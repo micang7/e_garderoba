@@ -28,6 +28,8 @@ describe('UserService', () => {
     role: UserRole.DANCER,
     createdAt: new Date(),
     passwordHash: 'haslo',
+    events: [],
+    approvedEvents: [],
   };
 
   beforeEach(async () => {
