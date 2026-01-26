@@ -18,7 +18,7 @@ services:
     env_file:
       - ./backend/.env.development.local
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
   db_test:
@@ -26,7 +26,7 @@ services:
     env_file:
       - ./backend/.env.test.local
     ports:
-      - "5433:5432"
+      - "5434:5432"
     tmpfs:
       - /var/lib/postgresql
 volumes:
