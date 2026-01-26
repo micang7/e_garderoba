@@ -27,10 +27,10 @@ import { EventModule } from './event/event.module';
         dropSchema: process.env.NODE_ENV === 'test',
       }),
     }),
-    UserModule,
     AuthModule,
-    ItemModule,
     EventModule,
+    ItemModule,
+    UserModule,
   ],
 })
 export class AppModule {}
