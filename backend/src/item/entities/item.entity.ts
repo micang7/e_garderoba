@@ -39,6 +39,6 @@ export class Item {
   })
   createdAt: Date;
 
-  @OneToMany(() => EventItem, (eventItem) => eventItem.item, { cascade: true })
+  @OneToMany(() => EventItem, (eventItem) => eventItem.item)
   events: EventItem[];
 }

@@ -11,7 +11,7 @@ import { EventType } from '../enums/event-type.enum';
 import { User } from '../../user/entities/user.entity';
 import { EventItem } from './eventItem.entity';
 
-@Entity()
+@Entity('events')
 export class Event {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,12 +19,12 @@ export class Event {
   @Column({ type: 'enum', enum: EventType })
   type: EventType;
 
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'approved_by' })
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'approvedBy' })
   approvedBy: User;
 
   @CreateDateColumn({
@@ -33,6 +33,6 @@ export class Event {
   })
   createdAt: Date;
 
-  @OneToMany(() => EventItem, (eventItem) => eventItem.event, { cascade: true })
+  @OneToMany(() => EventItem, (eventItem) => eventItem.event)
   items: EventItem[];
 }

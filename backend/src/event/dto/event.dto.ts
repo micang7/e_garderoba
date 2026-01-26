@@ -25,7 +25,7 @@ export class EventDto {
 
   @ApiProperty({ example: 'Jan Kowalski' })
   @Expose()
-  approverName: string;
+  approvedByName: string;
 
   @ApiProperty({ example: '2026-01-17T14:34:11.876' })
   @Expose()

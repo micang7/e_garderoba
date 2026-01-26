@@ -19,7 +19,7 @@ export class EventDetailsDto {
 
   @ApiProperty()
   @Expose()
-  approver: UserDto;
+  approvedBy: UserDto;
 
   @ApiProperty()
   @Expose()

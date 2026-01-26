@@ -2,13 +2,15 @@ import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { EventItem } from './eventItem.entity';
 import { RentalPurposeType } from '../enums/rental-purpose-type';
 
-@Entity()
+@Entity('rental_details')
 export class RentalDetails {
   @PrimaryColumn()
-  rentalId: number;
+  id: number;
 
-  @OneToOne(() => EventItem)
-  @JoinColumn({ name: 'rental_id' })
+  @OneToOne(() => EventItem, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'id' })
   item: EventItem;
 
   @Column({

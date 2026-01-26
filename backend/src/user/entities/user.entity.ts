@@ -42,9 +42,9 @@ export class User {
   })
   createdAt: Date;
 
-  @OneToMany(() => Event, (event) => event.user, { cascade: true })
+  @OneToMany(() => Event, (event) => event.user)
   events: Event[];
 
-  @OneToMany(() => Event, (event) => event.approvedBy, { cascade: true })
+  @OneToMany(() => Event, (event) => event.approvedBy)
   approvedEvents: Event[];
 }

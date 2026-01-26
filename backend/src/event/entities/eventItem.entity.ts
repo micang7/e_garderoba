@@ -11,31 +11,31 @@ import { RentalDetails } from './rentalDetails.entity';
 import { LossDetails } from './lossDetails.entity';
 import { ReturnDetails } from './returnDetails.entity';
 
-@Entity()
+@Entity('events_items')
 export class EventItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Event, { nullable: false })
-  @JoinColumn({ name: 'event_id' })
+  @ManyToOne(() => Event, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'eventId' })
   event: Event;
 
-  @ManyToOne(() => Item, { nullable: false })
-  @JoinColumn({ name: 'item_id' })
+  @ManyToOne(() => Item, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'itemId' })
   item: Item;
 
   @OneToOne(() => RentalDetails, (rentalDetails) => rentalDetails.item, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
   rentalDetails: RentalDetails;
 
   @OneToOne(() => LossDetails, (lossDetails) => lossDetails.item, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
   lossDetails: LossDetails;
 
   @OneToOne(() => ReturnDetails, (returnDetails) => returnDetails.item, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
   returnDetails: ReturnDetails;
 }

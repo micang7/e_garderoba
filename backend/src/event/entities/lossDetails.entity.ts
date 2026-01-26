@@ -1,13 +1,15 @@
 import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { EventItem } from './eventItem.entity';
 
-@Entity()
+@Entity('loss_details')
 export class LossDetails {
   @PrimaryColumn()
-  lossId: number;
+  id: number;
 
-  @OneToOne(() => EventItem)
-  @JoinColumn({ name: 'loss_id' })
+  @OneToOne(() => EventItem, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'id' })
   item: EventItem;
 
   @Column({ length: 500, nullable: true })

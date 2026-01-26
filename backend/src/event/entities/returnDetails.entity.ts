@@ -2,13 +2,15 @@ import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { EventItem } from './eventItem.entity';
 import { ReturnStatus } from '../enums/return-status.enum';
 
-@Entity()
+@Entity('return_details')
 export class ReturnDetails {
   @PrimaryColumn()
-  returnId: number;
+  id: number;
 
-  @OneToOne(() => EventItem)
-  @JoinColumn({ name: 'return_id' })
+  @OneToOne(() => EventItem, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'id' })
   item: EventItem;
 
   @Column({
