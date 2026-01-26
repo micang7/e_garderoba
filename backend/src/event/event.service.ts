@@ -25,142 +25,130 @@ export class EventService {
   ) {}
 
   async createRental(dto: CreateRentalDto): Promise<EventDto> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const eventId = await this.dataSource.transaction(async (manager) => {
+      try {
+        const result = await manager.query(
+          `SELECT * FROM create_rental($1,$2,$3,$4,$5,$6)`,
+          [
+            dto.userId,
+            dto.approvedBy,
+            dto.itemIds,
+            dto.purposeType ?? null,
+            dto.purposeDescription ?? null,
+            dto.plannedReturnDate,
+          ],
+        );
 
-    try {
-      const result = await queryRunner.query(
-        `SELECT * FROM create_rental($1,$2,$3,$4,$5,$6)`,
-        [
-          dto.userId,
-          dto.approvedBy,
-          dto.itemIds,
-          dto.purposeType ?? null,
-          dto.purposeDescription ?? null,
-          dto.plannedReturnDate,
-        ],
-      );
+        if (!result.length) {
+          throw new BadRequestException('Failed to create rental');
+        }
 
-      if (!result.length)
-        throw new BadRequestException('Failed to create rental');
+        return (result[0] as { event_id: number }).event_id;
+      } catch (e: any) {
+        if (e.code === 'P1001')
+          throw new BadRequestException(e.message.replace('P1001', ''));
+        else throw e;
+      }
+    });
 
-      const eventId = result[0].create_rental[0];
-      await queryRunner.commitTransaction();
+    const event = await this.events.findOne({
+      where: { id: eventId },
+      relations: ['user', 'approvedBy'],
+    });
 
-      const event = await this.events.findOne({
-        where: { id: eventId },
-        relations: ['user', 'approver'],
-      });
+    if (!event) throw new NotFoundException();
 
-      if (!event) throw new NotFoundException();
-
-      return plainToInstance(EventDto, {
-        id: event.id,
-        type: event.type,
-        userId: event.user.id,
-        userName: `${event.user.firstName} ${event.user.lastName}`,
-        approvedBy: event.approvedBy.id,
-        approverName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
-        createdAt: event.createdAt,
-      });
-    } catch (err: any) {
-      await queryRunner.rollbackTransaction();
-      if (err.code === 'P1001') throw new BadRequestException(err.message);
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+    return plainToInstance(EventDto, {
+      id: event.id,
+      type: event.type,
+      userId: event.user.id,
+      userName: `${event.user.firstName} ${event.user.lastName}`,
+      approvedBy: event.approvedBy.id,
+      approvedByName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
+      createdAt: event.createdAt,
+    });
   }
 
   async createLoss(dto: CreateLossDto): Promise<EventDto> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const eventId = await this.dataSource.transaction(async (manager) => {
+      try {
+        const result = await manager.query(
+          `SELECT * FROM create_loss($1,$2,$3,$4)`,
+          [dto.userId, dto.approvedBy, dto.itemIds, dto.description ?? null],
+        );
 
-    try {
-      const result = await queryRunner.query(
-        `SELECT * FROM create_loss($1,$2,$3,$4)`,
-        [dto.userId, dto.approvedBy, dto.itemIds, dto.description ?? null],
-      );
+        if (!result.length) {
+          throw new BadRequestException('Failed to create loss');
+        }
 
-      if (!result.length)
-        throw new BadRequestException('Failed to create loss');
+        return (result[0] as { event_id: number }).event_id;
+      } catch (e: any) {
+        if (e.code === 'P1001')
+          throw new BadRequestException(e.message.replace('P1001', ''));
+        else throw e;
+      }
+    });
 
-      const eventId = result[0].create_loss[0];
-      await queryRunner.commitTransaction();
+    const event = await this.events.findOne({
+      where: { id: eventId },
+      relations: ['user', 'approvedBy'],
+    });
 
-      const event = await this.events.findOne({
-        where: { id: eventId },
-        relations: ['user', 'approver'],
-      });
+    if (!event) throw new NotFoundException();
 
-      if (!event) throw new NotFoundException();
-
-      return plainToInstance(EventDto, {
-        id: event.id,
-        type: event.type,
-        userId: event.user.id,
-        userName: `${event.user.firstName} ${event.user.lastName}`,
-        approvedBy: event.approvedBy.id,
-        approverName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
-        createdAt: event.createdAt,
-      });
-    } catch (err: any) {
-      await queryRunner.rollbackTransaction();
-      if (err.code === 'P1001') throw new BadRequestException(err.message);
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+    return plainToInstance(EventDto, {
+      id: event.id,
+      type: event.type,
+      userId: event.user.id,
+      userName: `${event.user.firstName} ${event.user.lastName}`,
+      approvedBy: event.approvedBy.id,
+      approvedByName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
+      createdAt: event.createdAt,
+    });
   }
 
   async createReturn(dto: CreateReturnDto): Promise<EventDto> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const eventId = await this.dataSource.transaction(async (manager) => {
+      try {
+        const result = await manager.query(
+          `SELECT * FROM create_return($1,$2,$3,$4,$5)`,
+          [
+            dto.userId,
+            dto.approvedBy,
+            dto.itemIds,
+            dto.status ?? null,
+            dto.description ?? null,
+          ],
+        );
 
-    try {
-      const result = await queryRunner.query(
-        `SELECT * FROM create_return($1,$2,$3,$4,$5)`,
-        [
-          dto.userId,
-          dto.approvedBy,
-          dto.itemIds,
-          dto.status ?? null,
-          dto.description ?? null,
-        ],
-      );
+        if (!result.length) {
+          throw new BadRequestException('Failed to create return');
+        }
 
-      if (!result.length)
-        throw new BadRequestException('Failed to create return');
+        return (result[0] as { event_id: number }).event_id;
+      } catch (e: any) {
+        if (e.code === 'P1001')
+          throw new BadRequestException(e.message.replace('P1001', ''));
+        else throw e;
+      }
+    });
 
-      const eventId = result[0].create_return[0];
-      await queryRunner.commitTransaction();
+    const event = await this.events.findOne({
+      where: { id: eventId },
+      relations: ['user', 'approvedBy'],
+    });
 
-      const event = await this.events.findOne({
-        where: { id: eventId },
-        relations: ['user', 'approver'],
-      });
+    if (!event) throw new NotFoundException();
 
-      if (!event) throw new NotFoundException();
-
-      return plainToInstance(EventDto, {
-        id: event.id,
-        type: event.type,
-        userId: event.user.id,
-        userName: `${event.user.firstName} ${event.user.lastName}`,
-        approvedBy: event.approvedBy.id,
-        approverName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
-        createdAt: event.createdAt,
-      });
-    } catch (err: any) {
-      await queryRunner.rollbackTransaction();
-      if (err.code === 'P1001') throw new BadRequestException(err.message);
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+    return plainToInstance(EventDto, {
+      id: event.id,
+      type: event.type,
+      userId: event.user.id,
+      userName: `${event.user.firstName} ${event.user.lastName}`,
+      approvedBy: event.approvedBy.id,
+      approvedByName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
+      createdAt: event.createdAt,
+    });
   }
 
   async findAll(
@@ -169,7 +157,7 @@ export class EventService {
     const qb = this.events
       .createQueryBuilder('e')
       .leftJoinAndSelect('e.user', 'u')
-      .leftJoinAndSelect('e.approver', 'a');
+      .leftJoinAndSelect('e.approvedBy', 'a');
 
     if (query.search) {
       qb.andWhere(
@@ -190,7 +178,7 @@ export class EventService {
     const total = await qb.getCount();
 
     // sorting
-    qb.orderBy(`i.${query.sort ?? 'id'}`, query.order);
+    qb.orderBy(`e.${query.sort ?? 'id'}`, query.order);
 
     // pagination
     qb.skip(query.offset).take(query.limit);
@@ -204,7 +192,7 @@ export class EventService {
         userId: e.user.id,
         userName: `${e.user.firstName} ${e.user.lastName}`,
         approvedBy: e.approvedBy.id,
-        approverName: `${e.approvedBy.firstName} ${e.approvedBy.lastName}`,
+        approvedByName: `${e.approvedBy.firstName} ${e.approvedBy.lastName}`,
         createdAt: e.createdAt,
       }),
     );
@@ -217,7 +205,7 @@ export class EventService {
       where: { id },
       relations: [
         'user',
-        'approver',
+        'approvedBy',
         'items',
         'items.item',
         'items.rentalDetails',
@@ -232,7 +220,7 @@ export class EventService {
       id: event.id,
       type: event.type,
       user: plainToInstance(UserDto, event.user),
-      approver: plainToInstance(UserDto, event.approvedBy),
+      approvedBy: plainToInstance(UserDto, event.approvedBy),
       items: event.items.map((ei) => {
         const details =
           event.type === EventType.RENTAL
