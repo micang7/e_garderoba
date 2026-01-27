@@ -16,10 +16,7 @@ Aplikacja webowa mająca na celu ułatwienie procesu rejestracji przez kierownik
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
-![React Bootstrap](https://img.shields.io/badge/React%20Bootstrap-563D7C?style=flat&logo=react-bootstrap&logoColor=white)  
-![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=flat&logo=vitest&logoColor=white)
-![Testing Library](https://img.shields.io/badge/Testing%20Library-E33332?style=flat&logo=testing-library&logoColor=white)
-![Cypress](https://img.shields.io/badge/Cypress-17202C?style=flat&logo=cypress&logoColor=white)
+![React Bootstrap](https://img.shields.io/badge/React%20Bootstrap-563D7C?style=flat&logo=react-bootstrap&logoColor=white)
 
 **Backend**  
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat&logo=node.js&logoColor=white)
@@ -69,12 +66,12 @@ git clone https://github.com/micang7/e_garderoba.git .
 
 ### Konfiguracja środowiska
 
-Aby aplikacja się uruchomiła, w katalogach `/frontend` i `/backend` wymagane są pliki konfiguracyjne **`.env`**.
+Aby aplikacja się uruchomiła, w katalogach `/frontend` i `/backend` wymagane są pliki konfiguracyjne **`.env.development.local`**.
 Pliki `.env.example` zawierają przykładową konfigurację wystarczającą do uruchomienia aplikacji lokalnie w trybie developerskim/testowym. Wystarczy je skopiować nadając odpowiednią nazwę:
 
 ```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+cp backend/.env.example backend/.env.development.local
+cp frontend/.env.example frontend/.env.development.local
 ```
 
 > ⚠️ **Uwaga:** W środowisku produkcyjnym należy uzupełnić konfigurację własnymi wartościami.
@@ -97,7 +94,7 @@ Po uruchomieniu aplikacji, na hoście (np. w przeglądarce, Postman lub pgAdmin)
 **Backend**: [http://localhost:3000](http://localhost:3000)  
 **Baza danych**: `localhost:5432`
 
-**Dokumentacja API**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+**Dokumentacja API**: [http://localhost:3000/api/v1/docs](http://localhost:3000/api/v1/docs)
 
 ---
 
@@ -109,7 +106,7 @@ Aby zbudować i uruchomić wybraną usługę w kontenerze Docker, podaj jej nazw
 docker compose up -d <usługa>
 ```
 
-> ⚠️ **Uwaga:** W zależności od sposobu uruchomienia backendu i bazy danych, w pliku **`/backend/.env`** powinna być odpowiednio ustawiona wartość zmiennej `POSTGRES_HOST` (zgodnie z tabelą poniżej), ze względu na różnice w komunikacji backendu z bazą danych.
+> ⚠️ **Uwaga:** W zależności od sposobu uruchomienia backendu i bazy danych, w pliku **`/backend/.env.development.local`** powinna być odpowiednio ustawiona wartość zmiennej `POSTGRES_HOST` (zgodnie z tabelą poniżej), ze względu na różnice w komunikacji backendu z bazą danych.
 
 | Backend  | Baza danych     | `POSTGRES_HOST`        |
 | -------- | --------------- | ---------------------- |
@@ -139,7 +136,7 @@ npm install
 npm run start:dev
 ```
 
-Pamiętaj, żeby w pliku **`/backend/.env`** ustawić odpowiednio wartość zmiennej `POSTGRES_HOST` ([patrz tabela wyżej](#uruchomienie-tylko-wybranych-usług-w-kontenerach-docker)).
+Pamiętaj, żeby w pliku **`/backend/.env.development.local`** ustawić odpowiednio wartość zmiennej `POSTGRES_HOST` ([patrz tabela wyżej](#uruchomienie-tylko-wybranych-usług-w-kontenerach-docker)).
 
 > ⚠️ **Uwaga:** Aby uruchomić backend lokalnie musisz mieć zainstalowane [Node.js](https://nodejs.org/en/download/) (24.x LTS).
 
@@ -147,11 +144,71 @@ Pamiętaj, żeby w pliku **`/backend/.env`** ustawić odpowiednio wartość zmie
 
 #### Baza danych
 
-Wystarczy w pliku **`/backend/.env`** ustawić odpowiednio wartość zmiennej `POSTGRES_HOST` ([patrz tabela wyżej](#uruchomienie-tylko-wybranych-usług-w-kontenerach-docker)).
+Wystarczy w pliku **`/backend/.env.development.local`** ustawić odpowiednio wartość zmiennej `POSTGRES_HOST` ([patrz tabela wyżej](#uruchomienie-tylko-wybranych-usług-w-kontenerach-docker)).
 
 Jeśli lokalna baza danych działa na innym porcie niż domyślny `5432`, zmodyfikuj również zmienną `POSTGRES_PORT`.
 
 > ⚠️ **Uwaga:** Aby korzystać z lokalnej bazy danych musisz mieć zainstalowane [PostgreSQL](https://www.postgresql.org/download/).
+
+## Przykładowe konta użytkowników
+
+Po uruchomieniu aplikacji w środowisku Docker, baza danych zostaje automatycznie zasilona kontami testowymi o różnych poziomach uprawnień. Możesz ich użyć do przetestowania funkcjonalności:
+
+| Rola              | Login                    | Hasło        | Uprawnienia                                 |
+| ----------------- | ------------------------ | ------------ | ------------------------------------------- |
+| **Administrator** | `jkowalski@example.com`  | `jkowalski`  | Pełne zarządzanie użytkownikami i garderobą |
+| **Kierownik**     | `anowak@example.com`     | `anowak`     | Zarządzanie garderobą i wypożyczeniami      |
+| **Tancerz**       | `ljodlowski@example.com` | `ljodlowski` | Podgląd i edycja własnego profilu           |
+
+---
+
+## Automatyczna inicjalizacja bazy danych (Zero-Configuration)
+
+Projekt został skonfigurowany w taki sposób, aby po wykonaniu jednego polecenia `docker compose up -d` baza danych była w pełni gotowa do pracy – bez konieczności ręcznego uruchamiania migracji czy skryptów SQL.
+
+### Jak to działa?
+
+Wykorzystano mechanizm obrazu PostgreSQL, który przy pierwszym uruchomieniu kontenera automatycznie wykonuje skrypty znajdujące się w katalogu `/docker-entrypoint-initdb.d/`.
+
+### Kluczowe fragmenty konfiguracji:
+
+- **Mapowanie wolumenu w `docker-compose.yaml`:**  
+  Zastosowano mapowanie typu bind mount, dzięki któremu skrypty z katalogu projektowego są widoczne dla silnika bazy danych:
+
+```yaml
+db:
+  image: postgres:16
+  ...
+  volumes:
+    ...
+    - ./backend/src/database/init:/docker-entrypoint-initdb.d
+```
+
+- **Struktura skryptów SQL:**  
+  W folderze `./backend/src/database/init/` znajdują się pliki wykonywane w kolejności alfabetycznej:
+  - `01_schema.sql`: Wygenerowany przy użyciu narzędzia pg_dump (lub wyeksportowany z pgAdmin) z czystej struktury bazy. Zawiera definicje tabel, relacji oraz kluczy obcych.
+  - `02_seed.sql`: Zawiera przykładowe dane. Został przygotowany poprzez zasilenie bazy poleceniami INSERT oraz funkcjami składowanymi, a następnie wyeksportowany z pgAdmin dla zachowania spójności relacji.
+
+```bash
+e_garderoba/
+├── .github/
+├── backend/
+│   └── src/
+│       └── database/
+│           └── init/
+│               ├── 01_schema.sql
+│               └── 02_seed.sql
+├── concept/
+├── frontend/
+├── docker-compose.yaml
+└── README.md
+```
+
+> 💡 **Tip:** Aby zresetować bazę do stanu początkowego, użyj polecenia `docker compose down -v` (flaga `-v` usunie wolumen z danymi), a następnie ponownie uruchom kontenery.
+
+---
+
+[Zrealizowane techniki oraz dobre praktyki](./concept/techniques.md)
 
 ## Założenia projektowe
 
