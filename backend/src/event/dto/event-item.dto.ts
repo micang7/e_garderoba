@@ -1,16 +1,23 @@
 import { Expose } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { ItemDto } from 'src/item/dto/item.dto';
+import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { ItemDto } from '../../item/dto/item.dto';
 import { RentalDto } from './rental.dto';
 import { LossDto } from './loss.dto';
 import { ReturnDto } from './return.dto';
 
+@ApiExtraModels(RentalDto, LossDto, ReturnDto)
 export class EventItemDto {
-  @ApiProperty()
+  @ApiProperty({ type: ItemDto })
   @Expose()
   item: ItemDto;
 
-  @ApiProperty()
+  @ApiProperty({
+    oneOf: [
+      { $ref: getSchemaPath(RentalDto) },
+      { $ref: getSchemaPath(LossDto) },
+      { $ref: getSchemaPath(ReturnDto) },
+    ],
+  })
   @Expose()
   details: RentalDto | LossDto | ReturnDto;
 }

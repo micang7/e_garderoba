@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import {
   DataTable,
-  type DataTableQuery,
   type DataTableColumn,
+  type DataTableQuery,
 } from '../../components/organisms/DataTable';
+import { useDeleteEvent, useEvents } from '../../api/hooks/query/event-hooks';
 import Loader from '../../components/atoms/Spinner';
 import { toast } from 'sonner';
 import Page from '../Page';
 import { PrimaryButton } from '../../components/atoms/Button';
-import { useDeleteItem, useItems } from '../../api/hooks/query/item-hooks';
-import type { Item } from '../../api/interfaces/item-interfaces';
+import type { Event } from '../../api/interfaces/event-interfaces';
 
-export default function ItemsPage() {
+export default function EventsPage() {
   const [query, setQuery] = useState({
     offset: 0,
     limit: 10,
@@ -23,41 +23,27 @@ export default function ItemsPage() {
     }));
   };
 
-  const { data, isLoading, error } = useItems(query);
-  const deleteItem = useDeleteItem();
+  const { data, isLoading, error } = useEvents(query);
+  const deleteEvent = useDeleteEvent();
 
   const columns: DataTableColumn[] = [
     {
-      key: 'code',
-      type: 'string',
-      label: 'Kod',
-      filterable: true,
-    },
-    {
-      key: 'name',
-      type: 'string',
-      label: 'Nazwa',
-      sortable: true,
-      filterable: true,
-    },
-    {
-      key: 'size',
-      type: 'string',
-      label: 'Rozmiar',
-      filterable: true,
-    },
-    {
-      key: 'gender',
+      key: 'type',
       type: 'enum',
-      label: 'Płeć',
+      enumValues: ['wypożyczenie', 'zagubienie', 'zwrot'],
+      label: 'Typ',
       sortable: true,
       filterable: true,
-      enumValues: ['męski', 'damski', 'uniwersalny'],
     },
     {
-      key: 'description',
+      key: 'userName',
       type: 'string',
-      label: 'Opis',
+      label: 'Użytkownik',
+    },
+    {
+      key: 'approverName',
+      type: 'string',
+      label: 'Zatwierdzający',
     },
     {
       key: 'createdAt',
@@ -70,8 +56,8 @@ export default function ItemsPage() {
       key: 'actions',
       type: 'actions',
       label: '',
-      href: 'items',
-      onDelete: deleteItem.mutate,
+      href: 'events',
+      onDelete: deleteEvent.mutate,
     },
   ];
 
@@ -88,11 +74,11 @@ export default function ItemsPage() {
           marginBottom: '30px',
         }}
       >
-        <h2>Elementy</h2>
-        <PrimaryButton href="/items/create">Dodaj element</PrimaryButton>
+        <h2>Zdarzenia</h2>
+        <PrimaryButton href="/events/create">Dodaj zdarzenie</PrimaryButton>
       </div>
 
-      <DataTable<Item>
+      <DataTable<Event>
         data={data?.data}
         total={data?.meta.total || 0}
         columns={columns}

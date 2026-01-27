@@ -3,6 +3,7 @@ import SelectTextInput from '../atoms/SelectTextInput';
 
 interface SelectTextInputLabeledProps {
   label: string;
+  name?: string;
   required?: boolean;
   value: string;
   options: string[];
@@ -15,6 +16,7 @@ interface SelectTextInputLabeledProps {
 
 const SelectTextInputLabeled = ({
   label,
+  name,
   required = true,
   value,
   options,
@@ -30,6 +32,7 @@ const SelectTextInputLabeled = ({
 
       <SelectTextInput
         value={value}
+        name={name}
         options={options}
         onChange={onChange}
         onClick={onClick}

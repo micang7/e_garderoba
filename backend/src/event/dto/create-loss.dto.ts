@@ -11,7 +11,7 @@ export class CreateLossDto {
   @IsInt()
   approvedBy: number;
 
-  @ApiProperty({ example: [1, 2, 3] })
+  @ApiProperty({ type: Number, isArray: true, example: [1, 2, 3] })
   @IsInt({ each: true })
   itemIds: number[];
 

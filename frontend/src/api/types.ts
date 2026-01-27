@@ -4,38 +4,6 @@
  */
 
 export interface paths {
-    "/api/v1/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["UserController_findAll"];
-        put?: never;
-        post: operations["UserController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["UserController_findOne"];
-        put?: never;
-        post?: never;
-        delete: operations["UserController_delete"];
-        options?: never;
-        head?: never;
-        patch: operations["UserController_update"];
-        trace?: never;
-    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -47,6 +15,86 @@ export interface paths {
         put?: never;
         post: operations["AuthController_login"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/events/rental": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EventController_createRental"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/events/loss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EventController_createLoss"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/events/return": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EventController_createReturn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EventController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/events/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EventController_findOne"];
+        put?: never;
+        post?: never;
+        delete: operations["EventController_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -84,24 +132,45 @@ export interface paths {
         patch: operations["ItemController_update"];
         trace?: never;
     };
+    "/api/v1/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserController_findAll"];
+        put?: never;
+        post: operations["UserController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserController_findOne"];
+        put?: never;
+        post?: never;
+        delete: operations["UserController_delete"];
+        options?: never;
+        head?: never;
+        patch: operations["UserController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        CreateUserDto: {
-            /** @example Jan */
-            firstName: string;
-            /** @example Kowalski */
-            lastName: string;
+        LoginDto: {
             /** @example jkowalski@example.com */
             email: string;
-            /** @example 123456789 */
-            phone?: string;
-            /**
-             * @example administrator
-             * @enum {string}
-             */
-            role: "tancerz" | "kierownik" | "administrator";
             /** @example jkowalski */
             password: string;
         };
@@ -127,8 +196,13 @@ export interface components {
              */
             createdAt: string;
         };
-        UserResponseDto: {
-            data: components["schemas"]["UserDto"];
+        LoginResponsePayloadDto: {
+            user: components["schemas"]["UserDto"];
+            /** @example token */
+            token: string;
+        };
+        LoginResponseDto: {
+            data: components["schemas"]["LoginResponsePayloadDto"];
         };
         ValidationErrorDto: {
             /** @example email */
@@ -153,89 +227,73 @@ export interface components {
             /** @example error message */
             error: string;
         };
-        UserQueryDto: {
-            /** @example  */
-            offset?: number;
-            /** @example  */
-            limit?: number;
-            /** @example  */
-            search?: string;
+        CreateRentalDto: {
+            /** @example 4 */
+            userId: number;
+            /** @example 2 */
+            approvedBy: number;
             /**
-             * @example
+             * @example [
+             *       1,
+             *       2,
+             *       3
+             *     ]
+             */
+            itemIds: number[];
+            /**
+             * @example występ zespołu
              * @enum {string}
              */
-            order?: "ASC" | "DESC";
-            /**
-             * @example
-             * @enum {string}
-             */
-            sort?: "firstName" | "lastName" | "email" | "role" | "createdAt";
-            /** @example  */
-            firstName?: string;
-            /** @example  */
-            lastName?: string;
-            /** @example  */
-            email?: string;
-            /**
-             * @example
-             * @enum {string}
-             */
-            role?: "tancerz" | "kierownik" | "administrator";
-            /** @example  */
-            createdAtFrom?: string;
-            /** @example  */
-            createdAtTo?: string;
+            purposeType?: "występ zespołu" | "sesja zdjęciowa zespołu" | "naprawa we własnym zakresie" | "inny";
+            /** @example Jubileusz */
+            purposeDescription?: string;
+            /** @example 2026-01-30 */
+            plannedReturnDate: string;
         };
-        MetaDto: {
+        EventDto: {
             /** @example 1 */
-            total: number;
+            id: number;
+            /**
+             * @example wypożyczenie
+             * @enum {string}
+             */
+            type: "wypożyczenie" | "zagubienie" | "zwrot";
+            /** @example 1 */
+            userId: number;
+            /** @example Adam Nowak */
+            userName: string;
+            /** @example 2 */
+            approvedBy: number;
+            /** @example Jan Kowalski */
+            approverName: string;
+            /**
+             * Format: date-time
+             * @example 2026-01-17T14:34:11.876
+             */
+            createdAt: string;
         };
-        UserListResponseDto: {
-            meta: components["schemas"]["MetaDto"];
-            data: components["schemas"]["UserDto"][];
+        RentalDto: {
+            /**
+             * @example występ zespołu
+             * @enum {string}
+             */
+            purposeType?: "występ zespołu" | "sesja zdjęciowa zespołu" | "naprawa we własnym zakresie" | "inny";
+            /** @example Jubileusz */
+            purposeDescription?: string;
+            /** @example 2026-01-30 */
+            plannedReturnDate: string;
         };
-        UpdateUserDto: {
-            /** @example Mariusz */
-            firstName?: string;
-            /** @example Nowak */
-            lastName?: string;
-            /** @example mnowak@example.com */
-            email?: string;
+        LossDto: {
             /** @example null */
-            phone?: string;
+            description?: string;
+        };
+        ReturnDto: {
             /**
-             * @example kierownik
+             * @example bez uszkodzeń
              * @enum {string}
              */
-            role?: "tancerz" | "kierownik" | "administrator";
-        };
-        LoginDto: {
-            /** @example jkowalski@example.com */
-            email: string;
-            /** @example jkowalski */
-            password: string;
-        };
-        LoginResponsePayloadDto: {
-            user: components["schemas"]["UserDto"];
-            /** @example token */
-            token: string;
-        };
-        LoginResponseDto: {
-            data: components["schemas"]["LoginResponsePayloadDto"];
-        };
-        CreateItemDto: {
-            /** @example RZE-M-SPD-1 */
-            code: string;
-            /** @example Spodnie rzeszowskie */
-            name: string;
-            /** @example talia: 88 cm / biodra: 104 cm / nogawka: 82 cm */
-            size?: string;
-            /**
-             * @example męski
-             * @enum {string}
-             */
-            gender?: "męski" | "damski" | "uniwersalny";
-            /** @example Niebieskie spodnie z czerwonym herbem na zewnętrznej stronie nogawek. */
+            status?: "bez uszkodzeń" | "uszkodzony" | "zniszczony";
+            /** @example null */
             description?: string;
         };
         ItemDto: {
@@ -259,6 +317,117 @@ export interface components {
              * @example 2026-01-17T14:34:11.876Z
              */
             createdAt: string;
+        };
+        EventItemDto: {
+            item: components["schemas"]["ItemDto"];
+            details: components["schemas"]["RentalDto"] | components["schemas"]["LossDto"] | components["schemas"]["ReturnDto"];
+        };
+        EventDetailsDto: {
+            /** @example 1 */
+            id: number;
+            /**
+             * @example wypożyczenie
+             * @enum {string}
+             */
+            type: "wypożyczenie" | "zagubienie" | "zwrot";
+            user: components["schemas"]["UserDto"];
+            approver: components["schemas"]["UserDto"];
+            eventItems: components["schemas"]["EventItemDto"][];
+            /**
+             * Format: date-time
+             * @example 2026-01-17T14:34:11.876
+             */
+            createdAt: string;
+        };
+        EventResponseDto: {
+            data: components["schemas"]["EventDto"] | components["schemas"]["EventDetailsDto"];
+        };
+        CreateLossDto: {
+            /** @example 4 */
+            userId: number;
+            /** @example 2 */
+            approvedBy: number;
+            /**
+             * @example [
+             *       1,
+             *       2,
+             *       3
+             *     ]
+             */
+            itemIds: number[];
+            /** @example null */
+            description?: string;
+        };
+        CreateReturnDto: {
+            /** @example 4 */
+            userId: number;
+            /** @example 2 */
+            approvedBy: number;
+            /**
+             * @example [
+             *       1,
+             *       2,
+             *       3
+             *     ]
+             */
+            itemIds: number[];
+            /**
+             * @example bez uszkodzeń
+             * @enum {string}
+             */
+            status?: "bez uszkodzeń" | "uszkodzony" | "zniszczony";
+            /** @example null */
+            description?: string;
+        };
+        EventQueryDto: {
+            /** @example  */
+            offset?: number;
+            /** @example  */
+            limit?: number;
+            /** @example  */
+            search?: string;
+            /**
+             * @example
+             * @enum {string}
+             */
+            order?: "ASC" | "DESC";
+            /**
+             * @example
+             * @enum {string}
+             */
+            sort?: "type" | "createdAt";
+            /**
+             * @example
+             * @enum {string}
+             */
+            type?: "wypożyczenie" | "zagubienie" | "zwrot";
+            /** @example  */
+            createdAtFrom?: string;
+            /** @example  */
+            createdAtTo?: string;
+        };
+        MetaDto: {
+            /** @example 1 */
+            total: number;
+        };
+        EventListResponseDto: {
+            meta: components["schemas"]["MetaDto"];
+            data: components["schemas"]["EventDto"][];
+        };
+        CreateItemDto: {
+            /** @example RZE-M-SPD-1 */
+            code: string;
+            /** @example Spodnie rzeszowskie */
+            name: string;
+            /** @example talia: 88 cm / biodra: 104 cm / nogawka: 82 cm */
+            size?: string;
+            /**
+             * @example męski
+             * @enum {string}
+             */
+            gender?: "męski" | "damski" | "uniwersalny";
+            /** @example Niebieskie spodnie z czerwonym herbem na zewnętrznej stronie nogawek. */
+            description?: string;
         };
         ItemResponseDto: {
             data: components["schemas"]["ItemDto"];
@@ -313,6 +482,78 @@ export interface components {
             /** @example Spodnie w biało czerwone paski wzdłuż nogawek. */
             description?: string;
         };
+        CreateUserDto: {
+            /** @example Jan */
+            firstName: string;
+            /** @example Kowalski */
+            lastName: string;
+            /** @example jkowalski@example.com */
+            email: string;
+            /** @example 123456789 */
+            phone?: string;
+            /**
+             * @example administrator
+             * @enum {string}
+             */
+            role: "tancerz" | "kierownik" | "administrator";
+            /** @example jkowalski */
+            password: string;
+        };
+        UserResponseDto: {
+            data: components["schemas"]["UserDto"];
+        };
+        UserQueryDto: {
+            /** @example  */
+            offset?: number;
+            /** @example  */
+            limit?: number;
+            /** @example  */
+            search?: string;
+            /**
+             * @example
+             * @enum {string}
+             */
+            order?: "ASC" | "DESC";
+            /**
+             * @example
+             * @enum {string}
+             */
+            sort?: "firstName" | "lastName" | "email" | "role" | "createdAt";
+            /** @example  */
+            firstName?: string;
+            /** @example  */
+            lastName?: string;
+            /** @example  */
+            email?: string;
+            /**
+             * @example
+             * @enum {string}
+             */
+            role?: "tancerz" | "kierownik" | "administrator";
+            /** @example  */
+            createdAtFrom?: string;
+            /** @example  */
+            createdAtTo?: string;
+        };
+        UserListResponseDto: {
+            meta: components["schemas"]["MetaDto"];
+            data: components["schemas"]["UserDto"][];
+        };
+        UpdateUserDto: {
+            /** @example Mariusz */
+            firstName?: string;
+            /** @example Nowak */
+            lastName?: string;
+            /** @example mnowak@example.com */
+            email?: string;
+            /** @example null */
+            phone?: string;
+            /**
+             * @example kierownik
+             * @enum {string}
+             */
+            role?: "tancerz" | "kierownik" | "administrator";
+        };
     };
     responses: never;
     parameters: never;
@@ -322,33 +563,25 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    UserController_findAll: {
+    AuthController_login: {
         parameters: {
-            query?: {
-                offset?: number;
-                limit?: number;
-                search?: string;
-                order?: "ASC" | "DESC";
-                sort?: "firstName" | "lastName" | "email" | "role" | "createdAt";
-                firstName?: string;
-                lastName?: string;
-                email?: string;
-                role?: "tancerz" | "kierownik" | "administrator";
-                createdAtFrom?: string;
-                createdAtTo?: string;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
         responses: {
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserListResponseDto"];
+                    "application/json": components["schemas"]["LoginResponseDto"];
                 };
             };
             400: {
@@ -367,17 +600,9 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponseDto"];
                 };
             };
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
         };
     };
-    UserController_create: {
+    EventController_createRental: {
         parameters: {
             query?: never;
             header?: never;
@@ -386,7 +611,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateUserDto"];
+                "application/json": components["schemas"]["CreateRentalDto"];
             };
         };
         responses: {
@@ -395,7 +620,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserResponseDto"];
+                    "application/json": components["schemas"]["EventResponseDto"];
                 };
             };
             400: {
@@ -432,7 +657,169 @@ export interface operations {
             };
         };
     };
-    UserController_findOne: {
+    EventController_createLoss: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateLossDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EventController_createReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReturnDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EventController_findAll: {
+        parameters: {
+            query?: {
+                offset?: number;
+                limit?: number;
+                search?: string;
+                order?: "ASC" | "DESC";
+                sort?: "type" | "createdAt";
+                type?: "wypożyczenie" | "zagubienie" | "zwrot";
+                createdAtFrom?: string;
+                createdAtTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventListResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    EventController_findOne: {
         parameters: {
             query?: never;
             header?: never;
@@ -448,7 +835,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserResponseDto"];
+                    "application/json": components["schemas"]["EventResponseDto"];
                 };
             };
             400: {
@@ -477,7 +864,7 @@ export interface operations {
             };
         };
     };
-    UserController_delete: {
+    EventController_delete: {
         parameters: {
             query?: never;
             header?: never;
@@ -519,110 +906,6 @@ export interface operations {
                 };
             };
             404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    UserController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateUserDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponseDto"];
-                };
-            };
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    AuthController_login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LoginResponseDto"];
-                };
-            };
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
-                };
-            };
-            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -858,6 +1141,277 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ItemResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UserController_findAll: {
+        parameters: {
+            query?: {
+                offset?: number;
+                limit?: number;
+                search?: string;
+                order?: "ASC" | "DESC";
+                sort?: "firstName" | "lastName" | "email" | "role" | "createdAt";
+                firstName?: string;
+                lastName?: string;
+                email?: string;
+                role?: "tancerz" | "kierownik" | "administrator";
+                createdAtFrom?: string;
+                createdAtTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserListResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UserController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateUserDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UserController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UserController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UserController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
                 };
             };
             400: {

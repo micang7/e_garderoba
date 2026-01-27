@@ -2,6 +2,7 @@ import { Form, FormSelect } from 'react-bootstrap';
 
 interface SelectTextInputProps {
   value: string;
+  name?: string;
   options: string[];
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onClick?: (e: React.FormEvent) => void;
@@ -13,6 +14,7 @@ interface SelectTextInputProps {
 
 const SelectTextInput: React.FC<SelectTextInputProps> = ({
   value,
+  name,
   options,
   onChange,
   onClick,
@@ -25,6 +27,7 @@ const SelectTextInput: React.FC<SelectTextInputProps> = ({
     <div>
       <FormSelect
         value={value}
+        name={name}
         onChange={onChange}
         onClick={onClick}
         isInvalid={!!errorMessage}

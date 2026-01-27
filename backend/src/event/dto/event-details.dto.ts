@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { EventType } from '../enums/event-type.enum';
-import { UserDto } from 'src/user/dto/user.dto';
+import { UserDto } from '../../user/dto/user.dto';
 import { EventItemDto } from './event-item.dto';
 
 export class EventDetailsDto {
@@ -13,15 +13,15 @@ export class EventDetailsDto {
   @Expose()
   type?: EventType;
 
-  @ApiProperty()
+  @ApiProperty({ type: UserDto })
   @Expose()
   user: UserDto;
 
-  @ApiProperty()
+  @ApiProperty({ type: UserDto })
   @Expose()
-  approvedBy: UserDto;
+  approver: UserDto;
 
-  @ApiProperty()
+  @ApiProperty({ type: EventItemDto, isArray: true })
   @Expose()
   eventItems: EventItemDto[];
 

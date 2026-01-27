@@ -95,7 +95,7 @@ export default function CreateItem() {
               errorMessage={fieldErrors.description}
             />
           </Row>
-          <PrimaryButton type="submit">Dodaj użytkownika</PrimaryButton>
+          <PrimaryButton type="submit">Dodaj element</PrimaryButton>
         </Form>
       </Container>
     </Page>

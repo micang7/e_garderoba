@@ -45,6 +45,6 @@ export class User {
   @OneToMany(() => Event, (event) => event.user)
   events: Event[];
 
-  @OneToMany(() => Event, (event) => event.approvedBy)
+  @OneToMany(() => Event, (event) => event.approver)
   approvedEvents: Event[];
 }

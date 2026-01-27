@@ -14,7 +14,7 @@ export class RentalDto {
     example: 'Jubileusz',
   })
   @Expose()
-  description?: string;
+  purposeDescription?: string;
 
   @ApiProperty({
     example: '2026-01-30',
