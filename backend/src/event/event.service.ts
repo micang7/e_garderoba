@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
@@ -40,20 +40,22 @@ export class EventService {
         );
 
         if (!result.length) {
-          throw new BadRequestException('Failed to create rental');
+          throw new UnprocessableEntityException('Failed to create rental');
         }
 
         return (result[0] as { event_id: number }).event_id;
       } catch (e: any) {
         if (e.code === 'P1001')
-          throw new BadRequestException(e.message.replace('P1001', ''));
+          throw new UnprocessableEntityException(
+            e.message.replace('P1001', ''),
+          );
         else throw e;
       }
     });
 
     const event = await this.events.findOne({
       where: { id: eventId },
-      relations: ['user', 'approvedBy'],
+      relations: ['user', 'approver'],
     });
 
     if (!event) throw new NotFoundException();
@@ -63,8 +65,8 @@ export class EventService {
       type: event.type,
       userId: event.user.id,
       userName: `${event.user.firstName} ${event.user.lastName}`,
-      approvedBy: event.approvedBy.id,
-      approvedByName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
+      approvedBy: event.approver.id,
+      approverName: `${event.approver.firstName} ${event.approver.lastName}`,
       createdAt: event.createdAt,
     });
   }
@@ -78,20 +80,22 @@ export class EventService {
         );
 
         if (!result.length) {
-          throw new BadRequestException('Failed to create loss');
+          throw new UnprocessableEntityException('Failed to create loss');
         }
 
         return (result[0] as { event_id: number }).event_id;
       } catch (e: any) {
         if (e.code === 'P1001')
-          throw new BadRequestException(e.message.replace('P1001', ''));
+          throw new UnprocessableEntityException(
+            e.message.replace('P1001', ''),
+          );
         else throw e;
       }
     });
 
     const event = await this.events.findOne({
       where: { id: eventId },
-      relations: ['user', 'approvedBy'],
+      relations: ['user', 'approver'],
     });
 
     if (!event) throw new NotFoundException();
@@ -101,8 +105,8 @@ export class EventService {
       type: event.type,
       userId: event.user.id,
       userName: `${event.user.firstName} ${event.user.lastName}`,
-      approvedBy: event.approvedBy.id,
-      approvedByName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
+      approvedBy: event.approver.id,
+      approverName: `${event.approver.firstName} ${event.approver.lastName}`,
       createdAt: event.createdAt,
     });
   }
@@ -122,20 +126,22 @@ export class EventService {
         );
 
         if (!result.length) {
-          throw new BadRequestException('Failed to create return');
+          throw new UnprocessableEntityException('Failed to create return');
         }
 
         return (result[0] as { event_id: number }).event_id;
       } catch (e: any) {
         if (e.code === 'P1001')
-          throw new BadRequestException(e.message.replace('P1001', ''));
+          throw new UnprocessableEntityException(
+            e.message.replace('P1001', ''),
+          );
         else throw e;
       }
     });
 
     const event = await this.events.findOne({
       where: { id: eventId },
-      relations: ['user', 'approvedBy'],
+      relations: ['user', 'approver'],
     });
 
     if (!event) throw new NotFoundException();
@@ -145,8 +151,8 @@ export class EventService {
       type: event.type,
       userId: event.user.id,
       userName: `${event.user.firstName} ${event.user.lastName}`,
-      approvedBy: event.approvedBy.id,
-      approvedByName: `${event.approvedBy.firstName} ${event.approvedBy.lastName}`,
+      approvedBy: event.approver.id,
+      approverName: `${event.approver.firstName} ${event.approver.lastName}`,
       createdAt: event.createdAt,
     });
   }
@@ -157,7 +163,7 @@ export class EventService {
     const qb = this.events
       .createQueryBuilder('e')
       .leftJoinAndSelect('e.user', 'u')
-      .leftJoinAndSelect('e.approvedBy', 'a');
+      .leftJoinAndSelect('e.approver', 'a');
 
     if (query.search) {
       qb.andWhere(
@@ -191,8 +197,8 @@ export class EventService {
         type: e.type,
         userId: e.user.id,
         userName: `${e.user.firstName} ${e.user.lastName}`,
-        approvedBy: e.approvedBy.id,
-        approvedByName: `${e.approvedBy.firstName} ${e.approvedBy.lastName}`,
+        approvedBy: e.approver.id,
+        approverName: `${e.approver.firstName} ${e.approver.lastName}`,
         createdAt: e.createdAt,
       }),
     );
@@ -205,7 +211,7 @@ export class EventService {
       where: { id },
       relations: [
         'user',
-        'approvedBy',
+        'approver',
         'items',
         'items.item',
         'items.rentalDetails',
@@ -220,8 +226,8 @@ export class EventService {
       id: event.id,
       type: event.type,
       user: plainToInstance(UserDto, event.user),
-      approvedBy: plainToInstance(UserDto, event.approvedBy),
-      items: event.items.map((ei) => {
+      approver: plainToInstance(UserDto, event.approver),
+      eventItems: event.items.map((ei) => {
         const details =
           event.type === EventType.RENTAL
             ? ei.rentalDetails

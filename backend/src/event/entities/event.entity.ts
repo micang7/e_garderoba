@@ -25,7 +25,7 @@ export class Event {
 
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'approvedBy' })
-  approvedBy: User;
+  approver: User;
 
   @CreateDateColumn({
     type: 'timestamp',

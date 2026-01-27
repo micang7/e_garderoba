@@ -7,6 +7,9 @@ import UserDetails from './pages/users/UserDetails';
 import Items from './pages/items/Items';
 import CreateItem from './pages/items/CreateItem';
 import ItemDetails from './pages/items/ItemDetails';
+import Events from './pages/events/Events';
+import CreateEvent from './pages/events/CreateEvent';
+import EventDetails from './pages/events/EventDetails';
 import NotFound from './pages/NotFound';
 import ProtectedLayout from './auth/ProtectedLayout';
 
@@ -28,6 +31,12 @@ const App = () => (
           <Route index element={<Items />} />
           <Route path="create" element={<CreateItem />} />
           <Route path=":id" element={<ItemDetails />} />
+        </Route>
+
+        <Route path="events">
+          <Route index element={<Events />} />
+          <Route path="create" element={<CreateEvent />} />
+          <Route path=":id" element={<EventDetails />} />
         </Route>
       </Route>
 
