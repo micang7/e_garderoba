@@ -8,13 +8,13 @@ export default function useAuthApi() {
 
   return {
     login: (data: LoginDto): Promise<LoginResponse> =>
-      apiClient.post<LoginResponse>('/api/v1/auth/login', data).then((r) => {
+      apiClient.post<LoginResponse>('/auth/login', data).then((r) => {
         setToken(r.data.data.token);
         setUser(r.data.data.user);
         return r.data;
       }),
 
     me: (): Promise<LoginResponse> =>
-      apiClient.get<LoginResponse>('/api/v1/auth/me').then((r) => r.data),
+      apiClient.get<LoginResponse>('/auth/me').then((r) => r.data),
   };
 }

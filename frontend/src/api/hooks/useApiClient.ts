@@ -8,7 +8,7 @@ export default function useApiClient() {
   const navigate = useNavigate();
 
   const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: '/api/v1',
     headers: {
       'Content-Type': 'application/json',
     },

@@ -219,29 +219,30 @@ export function useDashboard() {
   return useQuery({
     queryKey: ['dashboard'],
     queryFn: async () => {
-      // const res = await apiClient.get('/api/v1/events/dashboard');
+      // const res = await apiClient.get('/events/dashboard');
       // return res.data;
       return {
         data: {
-          totalEvents: 482,
+          totalEvents: 20,
           eventsByType: {
-            wypozyczenie: 271,
-            zwrot: 186,
-            zagubienie: 25,
+            wypozyczenie: 10,
+            zwrot: 9,
+            zagubienie: 1,
           },
-          uniqueUsers: 74,
-          activeRentals: 39,
+          uniqueUsers: 12,
+          activeRentals: 5,
           mostPopularItem: {
-            itemId: 12,
-            itemCode: 'GTR-004',
-            count: 58,
+            itemId: 2,
+            itemCode: 'KRA-D-GOR-1',
+            count: 4,
           },
-          averageRentalDuration: '12',
+          averageRentalDuration: '2.5',
           eventsLast30Days: [
-            { day: '2026-01-27', count: 12 },
-            { day: '2026-01-26', count: 15 },
-            { day: '2026-01-25', count: 9 },
-            { day: '2026-01-24', count: 14 },
+            { day: '2026-01-27', count: 4 },
+            { day: '2026-01-26', count: 3 },
+            { day: '2026-01-25', count: 5 },
+            { day: '2026-01-24', count: 2 },
+            { day: '2026-01-20', count: 6 },
           ],
         },
       };
