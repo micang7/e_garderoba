@@ -19,8 +19,10 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+      - ./backend/src/database/init:/docker-entrypoint-initdb.d
   db_test:
     image: postgres:16
+    profiles: ["test"]
     env_file:
       - ./backend/.env.test.local
     ports:
