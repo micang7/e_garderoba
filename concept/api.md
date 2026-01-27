@@ -4,7 +4,6 @@
 
 ## Autentykacja i autoryzacja
 
-- **Klucz API** - nagłówek: "x-api-key"
 - **JWT** - nagłówek: "Authorization"
 
 ## Endpointy
@@ -12,8 +11,6 @@
 ### /auth
 
 - POST /login
-- POST /refresh
-- POST /reset-password
 
 ### /users
 
@@ -22,7 +19,6 @@
 - GET /:id
 - PATCH /:id
 - DELETE /:id
-- GET /:id/events
 
 ### /items
 
@@ -31,17 +27,6 @@
 - GET /:id
 - PATCH /:id
 - DELETE /:id
-- GET /:id/events
-- GET /:id/costumes
-
-### /costumes
-
-- POST /
-- GET /
-- GET /:id
-- PATCH /:id
-- DELETE /:id
-- GET /:id/items
 
 ### /events
 
