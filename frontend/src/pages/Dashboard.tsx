@@ -11,7 +11,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <Page>
-        <h1>Dashboard</h1>
+        <h1>Witaj w systemie e-garderoba!</h1>
         <Spinner />
       </Page>
     );
@@ -29,7 +29,7 @@ export default function Dashboard() {
 
   return (
     <Page>
-      <h1>Dashboard</h1>
+      <h1>Witaj w systemie e-garderoba!</h1>
 
       <Row className="mt-4" xs={1} md={2} lg={3} xl={4}>
         <Col className="mb-3">
