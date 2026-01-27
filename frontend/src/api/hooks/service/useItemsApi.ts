@@ -13,21 +13,19 @@ export default function useItemsApi() {
   return {
     getAll: (query?: ItemQuery): Promise<ItemListResponse> =>
       apiClient
-        .get<ItemListResponse>('/api/v1/items', { params: query })
+        .get<ItemListResponse>('/items', { params: query })
         .then((r) => r.data),
 
     getById: (id: number): Promise<ItemResponse> =>
-      apiClient.get<ItemResponse>(`/api/v1/items/${id}`).then((r) => r.data),
+      apiClient.get<ItemResponse>(`/items/${id}`).then((r) => r.data),
 
     create: (data: CreateItemDto): Promise<ItemResponse> =>
-      apiClient.post<ItemResponse>('/api/v1/items', data).then((r) => r.data),
+      apiClient.post<ItemResponse>('/items', data).then((r) => r.data),
 
     update: (id: number, data: UpdateItemDto): Promise<ItemResponse> =>
-      apiClient
-        .patch<ItemResponse>(`/api/v1/items/${id}`, data)
-        .then((r) => r.data),
+      apiClient.patch<ItemResponse>(`/items/${id}`, data).then((r) => r.data),
 
     delete: (id: number): Promise<void> =>
-      apiClient.delete(`/api/v1/items/${id}`).then(() => undefined),
+      apiClient.delete(`/items/${id}`).then(() => undefined),
   };
 }
